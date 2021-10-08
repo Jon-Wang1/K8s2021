@@ -61,19 +61,19 @@ EOF
 cd /opt/certs/
 cfssl gencert -initca ca-csr.json | cfssl-json -bare ca
 ~~~ 下面是输出 ~~~
-2020/09/09 03:09:38 [INFO] generating a new CA key and certificate from CSR
-2020/09/09 03:09:38 [INFO] generate received request
-2020/09/09 03:09:38 [INFO] received CSR
-2020/09/09 03:09:38 [INFO] generating key: rsa-2048
-2020/09/09 03:09:39 [INFO] encoded CSR
-2020/09/09 03:09:39 [INFO] signed certificate with serial number 305773733204133988374871170151725823517100191358
+2021/10/08 12:47:21 [INFO] generating a new CA key and certificate from CSR
+2021/10/08 12:47:21 [INFO] generate received request
+2021/10/08 12:47:21 [INFO] received CSR
+2021/10/08 12:47:21 [INFO] generating key: rsa-4096
+2021/10/08 12:47:27 [INFO] encoded CSR
+2021/10/08 12:47:27 [INFO] signed certificate with serial number 367155466849847377434969243887200627215915796633
 
 [root@localhost certs]# ll
 总用量 16
--rw-r--r-- 1 root root 1009 9月   9 03:09 ca.csr      # 证书请求
--rw-r--r-- 1 root root  338 9月   9 03:07 ca-csr.json
--rw------- 1 root root 1675 9月   9 03:09 ca-key.pem  # 根的私钥
--rw-r--r-- 1 root root 1371 9月   9 03:09 ca.pem      # 根证书
+-rw-r--r-- 1 root root 1667 Oct  8 12:47 ca.csr      # 证书请求
+-rw-r--r-- 1 root root  302 Oct  8 12:47 ca-csr.json
+-rw------- 1 root root 3243 Oct  8 12:47 ca-key.pem  # 根的私钥
+-rw-r--r-- 1 root root 2000 Oct  8 12:47 ca.pem      # 根证书
 ```
 
 ### 查看证书信息(dnsca)
