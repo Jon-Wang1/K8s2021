@@ -104,6 +104,7 @@ harbor                      A   10.1.1.220
 nginx01                     A   10.1.1.11
 nginx02                     A   10.1.1.12
 gitlab                      A   10.1.1.230
+kubernetes                  A   10.1.1.10
 EOF
 ```
 

@@ -95,6 +95,12 @@ Last login: Fri Oct  8 09:08:32 2021 from 10.1.1.50
 [root@dnsca ~]# exit
 logout
 
+### 下次考虑次方法
+[root@k8s-master01 ~]# ssh-keygen -t rsa
+[root@k8s-master01 ~]# cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
+[root@k8s-master01 ~]# ssh-copy-id -i /root/.ssh/id_rsa.pub -p22 root@k8s-master01
+[root@k8s-master01 ~]# ssh-copy-id -i /root/.ssh/id_rsa.pub -p22 root@k8s-master02
+
 ----------------------------------注意此处切换设备--------------------------------------
 
 ### 修改harbor配置文件(harbor)
