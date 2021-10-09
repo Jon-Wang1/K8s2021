@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="2222bcc4-a21a-4073-bb38-1b6d39e7d2a9" name="mgmtcentos">
+        <fileTransfer rootFolder="/K8S2021" accessType="SFTP" host="mgmtcentos.qytanghost.com" port="22" sshConfigId="c7433fb0-6766-47cf-a2af-5d5b32d2e40d" sshConfig="root@mgmtcentos.qytanghost.com:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

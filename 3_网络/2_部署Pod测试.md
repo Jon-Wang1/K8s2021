@@ -1,20 +1,20 @@
 # 自作nginx-curl镜像 (dnsca)
 ```shell script
-cd /data/dockerfile/qyt_lb/
+cd /K8S2021/yaml_dockerfile/dockerfile/qyt_lb/
 
-docker build -t harbor.qytang.com/public/qyt_lb .
+docker build -t harbor.qytanghost.com/public/qyt_lb .
 
-docker login harbor.qytang.com
+docker login harbor.qytanghost.com
 admin
 Cisc0123
 
-docker push harbor.qytang.com/public/qyt_lb 
+docker push harbor.qytanghost.com/public/qyt_lb 
 ```
 
 ### 应用资源配置清单 (任何一个Master)
 ```shell script
-kubectl apply -f http://k8s-yaml.qytang.com/qyt-lb/qyt-lb-dp.yaml
-kubectl apply -f http://k8s-yaml.qytang.com/qyt-lb/qyt-lb-ds.yaml
+kubectl apply -f http://mgmtcentos.qytanghost.com/qyt-lb/qyt-lb-dp.yaml
+kubectl apply -f http://mgmtcentos.qytanghost.com/qyt-lb/qyt-lb-ds.yaml
 ```
 
 ### 查看状况 (任何一个Master)

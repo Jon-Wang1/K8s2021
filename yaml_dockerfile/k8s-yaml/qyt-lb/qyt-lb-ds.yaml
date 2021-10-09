@@ -13,6 +13,6 @@ spec:
     spec:
       containers:
       - name: container-1-qyt-lb # 容器的名字, 一个pod内可以有多个容器
-        image: harbor.qytang.com/public/qyt_lb # 容器的镜像
+        image: harbor.qytanghost.com/public/qyt_lb # 容器的镜像
         ports:
         - containerPort: 5000 # 只是一个信息, 类似于Dockerfile的EXPOSE
