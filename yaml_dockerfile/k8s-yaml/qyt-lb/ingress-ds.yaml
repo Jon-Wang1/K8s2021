@@ -1,13 +1,13 @@
-apiVersion: networking.k8s.io/v1beta1
-kind: Ingress
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: qyt-lb-ds
 spec:
-  rules:
-  - host: qyt-lb-ds.qytang.com
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: qyt-lb-ds-service
-          servicePort: 5000
+  entryPoints:
+  - web
+  routes:
+  - match: Host(`qyt-lb-ds.qytangk8s.com`)
+    kind: Rule
+    services:
+    - name: qyt-lb-ds-service
+      port: 5000
