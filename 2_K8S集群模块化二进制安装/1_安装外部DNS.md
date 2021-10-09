@@ -105,6 +105,8 @@ nginx01                     A   10.1.1.11
 nginx02                     A   10.1.1.12
 gitlab                      A   10.1.1.230
 kubernetes                  A   10.1.1.10
+mgmtwin7                    A   10.1.1.50
+mgmtcentos                  A   10.1.1.60
 EOF
 ```
 
