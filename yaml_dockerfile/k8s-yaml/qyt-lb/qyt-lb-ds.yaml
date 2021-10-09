@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: qyt-lb-ds # daemonset的名字
+spec:
+  selector:
+    matchLabels:
+      app: qyt-lb-ds-label # 选择器匹配的标签
+  template:
+    metadata:
+      labels:
+        app: qyt-lb-ds-label # 标签
+    spec:
+      containers:
+      - name: container-1-qyt-lb # 容器的名字, 一个pod内可以有多个容器
+        image: harbor.qytang.com/public/qyt_lb # 容器的镜像
+        ports:
+        - containerPort: 5000 # 只是一个信息, 类似于Dockerfile的EXPOSE

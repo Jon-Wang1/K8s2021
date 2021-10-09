@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qyt-lb-ds-service # service的名字
+spec:
+  selector:
+    app: qyt-lb-ds-label # service选择的标签
+  ports:
+  - name: http
+    port: 5000 # 对外暴露的端口
+    protocol: TCP
