@@ -73,8 +73,7 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/calico/calicoctl.yaml
 
 ```
 
-### 查看命名空间
-```shell script
+### 等待3-5分钟，查看命名空间(任何一个Master)
 [root@master01 ~]# kubectl get ns
 NAME               STATUS   AGE
 calico-apiserver   Active   7m36s
@@ -85,18 +84,14 @@ kube-public        Active   164m
 kube-system        Active   164m
 tigera-operator    Active   10m
 
-```
 
-### 查看命名空间tigera-operator的pods
-```shell script
+### 查看命名空间tigera-operator的pods(任何一个Master)
 [root@master01 ~]# kubectl get pod -n tigera-operator
 NAME                               READY   STATUS    RESTARTS   AGE
 tigera-operator-59f4845b57-knzgz   1/1     Running   1          10m
 
-```
 
-### 查看命名空间calico-system的pods
-```shell script
+### 查看命名空间calico-system的pods(任何一个Master)
 [root@master01 ~]# kubectl get pod -n calico-system
 NAME                                       READY   STATUS    RESTARTS   AGE
 calico-kube-controllers-5dc68f7985-tkxp6   1/1     Running   0          10m
@@ -107,52 +102,63 @@ calico-typha-658c5d57d-bxqkz               1/1     Running   0          10m
 calico-typha-658c5d57d-fqbnh               1/1     Running   0          10m
 calico-typha-658c5d57d-xvgkh               1/1     Running   0          10m
 
+### 查看命名空间calico-apiserver的pods(任何一个Master)
 [root@master01 ~]# kubectl get pod -n calico-apiserver
 NAME                                READY   STATUS    RESTARTS   AGE
 calico-apiserver-6bb8d7579f-dc8s7   1/1     Running   0          8m11s
 
-```
 
-### 查看命名空间
-```shell script
+### 查看位于kube-system中的calicoctl(任何一个Master)
 [root@master01 ~]# kubectl get pod -n kube-system
 NAME        READY   STATUS    RESTARTS   AGE
 calicoctl   1/1     Running   0          4m34s
-```
 
-### 如果希望预留地址(推荐)
-```shell script
-# 给node打标签
+
+## 如果希望预留地址(推荐)(任何一个Master)
+
+### 给node打标签(任何一个Master)
+```shell
 kubectl label nodes node01.qytanghost.com rack=1
 kubectl label nodes node02.qytanghost.com rack=2
 kubectl label nodes node03.qytanghost.com rack=3
 
-# 授权etcd-client kubelet-api-admin 
+```
+
+# 授权etcd-client kubelet-api-admin （etcd-client这个证书，用来和apiserver通信写入apiserver数据库）(任何一个Master)
+```shell
 kubectl create clusterrolebinding kube-apiserver:kubelet-apis --clusterrole=system:kubelet-api-admin --user etcd-client
-
-# 查看地址池
-kubectl exec -it calicoctl -n kube-system -- calicoctl get ippool -o wide
-
-# 删除默认的地址池
-kubectl exec -it calicoctl -n kube-system -- calicoctl delete ippools default-ipv4-ippool
-
 
 ```
 
-# 下载资源配置清单
+# 查看地址池(任何一个Master)
+```shell
+kubectl exec -it calicoctl -n kube-system -- calicoctl get ippool -o wide
+
+```
+# 删除默认的地址池(任何一个Master)
+```shell
+kubectl exec -it calicoctl -n kube-system -- calicoctl delete ippools default-ipv4-ippool
+
+```
+
+# 下载资源配置清单(任何一个Master)
+```shell
 wget http://mgmtcentos.qytanghost.com/calico/node01.yaml
 wget http://mgmtcentos.qytanghost.com/calico/node02.yaml
 wget http://mgmtcentos.qytanghost.com/calico/node03.yaml
 
-# 应用资源配置清单
+```
+# 应用资源配置清单(任何一个Master)
+```shell
 kubectl exec -it calicoctl -n kube-system -- calicoctl create -f - < node01.yaml
 kubectl exec -it calicoctl -n kube-system -- calicoctl create -f - < node02.yaml
 kubectl exec -it calicoctl -n kube-system -- calicoctl create -f - < node03.yaml
 
-# 查看地址池
-kubectl exec -it calicoctl -n kube-system -- calicoctl get ippool -o wide
-NAME            CIDR              NAT    IPIPMODE   VXLANMODE   DISABLED   SELECTOR      
-rack-1-ippool   172.16.201.0/24   true   Never      Always      false      rack == "1"   
-rack-2-ippool   172.16.202.0/24   true   Never      Always      false      rack == "2"   
-rack-3-ippool   172.16.203.0/24   true   Never      Always      false      rack == "3"   
 ```
+
+# 查看地址池(任何一个Master)
+[root@master01 ~]# kubectl exec -it calicoctl -n kube-system -- calicoctl get ippool -o wide
+NAME            CIDR              NAT    IPIPMODE   VXLANMODE   DISABLED   SELECTOR
+rack-1-ippool   172.16.201.0/24   true   Never      Always      false      rack == "1"
+rack-2-ippool   172.16.202.0/24   true   Never      Always      false      rack == "2"
+rack-3-ippool   172.16.203.0/24   true   Never      Always      false      rack == "3"

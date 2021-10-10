@@ -31,26 +31,42 @@ cfssl gencert \
       -config=ca-config.json \
       -profile=server \
       nginx-csr.json | cfssl-json -bare nginx
-```
 
-### 安装sshpass,并确认秘钥
+```
+----------------------------------注意此处切换设备--------------------------------------
+
+### 安装sshpass,并确认秘钥 (Nginx01, Nginx02)
 ```shell
 yum install -y epel-release
 yum install -y sshpass
-
-ssh root@dnsca.qytanghost.com
 ```
 
-### Nginx下载证书
+### 确认dnsca.qytanghost.com的秘钥 (Nginx01, Nginx02)
+[root@nginx02 ~]# ssh root@dnsca.qytanghost.com
+The authenticity of host 'dnsca.qytanghost.com (10.1.1.219)' can't be established.
+ECDSA key fingerprint is SHA256:jWlSzcu5QdgKgh19Haz/pXf4AfIwbt9cfzDERxuzwCs.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'dnsca.qytanghost.com,10.1.1.219' (ECDSA) to the list of known hosts.
+root@dnsca.qytanghost.com's password:
+Last login: Sun Oct 10 16:31:59 2021 from 10.1.1.60
+[root@dnsca ~]# exit [一定要退出]
+logout
+Connection to dnsca.qytanghost.com closed.
+[root@nginx02 ~]#
+
+
+
+### Nginx下载证书(Nginx01, Nginx02)
 ```shell
 mkdir /etc/nginx/certs
 cd /etc/nginx/certs
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/ca.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/nginx.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/nginx-key.pem .
+
 ```
 
-### 配置NGINX nginx.conf
+### 配置NGINX nginx.conf(Nginx01, Nginx02)
 ```shell script
 cat > /etc/nginx/nginx.conf <<'EOF'
 # For more information on configuration, see:
@@ -158,9 +174,10 @@ stream {
     }
 }
 EOF
+
 ```
 
-### 配置NGINX nginx.conf
+### 配置NGINX qytang.com.conf(Nginx01, Nginx02)
 ```shell script
 cat > /etc/nginx/conf.d/qytang.com.conf <<'EOF'
 upstream default_backend_traefik {
@@ -196,9 +213,12 @@ server {
     }
 }
 EOF
+
 ```
 
 ### 重启nginx服务
 ```shell
+nginx -s reload
+systemctl restart nginx
 
 ```
