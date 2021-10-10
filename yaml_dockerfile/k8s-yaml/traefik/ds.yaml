@@ -47,6 +47,7 @@ spec:
         - --ping=true
         - --providers.kubernetesingress
         - --providers.kubernetescrd
+        - --serverstransport.insecureskipverify=true
 #        - --serversTransport.insecureSkipVerify=true
 #        - --experimental.pilot.token=81aaa5f4-54ac-45e5-91a4-d567c3a4bb8e
         # - --providers.file.filename=/config/traefik-tls.toml
