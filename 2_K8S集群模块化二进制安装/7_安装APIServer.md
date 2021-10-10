@@ -16,6 +16,7 @@ mv /opt/kubernetes/ /opt/kubernetes-v1.20.11-linux-amd64
 ln -s /opt/kubernetes-v1.20.11-linux-amd64/ /opt/kubernetes
 mkdir /opt/kubernetes/server/cert
 mkdir /opt/kubernetes/server/conf
+
 ```
 
 ### 查看目录(Master01, Master02 and Master03)
@@ -58,6 +59,7 @@ cfssl gencert -ca=ca.pem \
               -config=ca-config.json \
               -profile=client etcd-client-csr.json \
               |cfssl-json -bare etcd-client
+
 ```
 
 ### 查看etcd client证书
@@ -107,6 +109,7 @@ cfssl gencert -ca=ca.pem \
               -config=ca-config.json \
               -profile=server kubernetes-csr.json \
               |cfssl-json -bare kubernetes
+
 ```
 
 ### 查看apiserver证书 (dnsca)
@@ -120,10 +123,13 @@ cfssl gencert -ca=ca.pem \
 ```shell script
 # 产生秘钥对
 openssl genrsa -des3 -out rsapair.pem 2048
+
 # 导出公钥
 openssl rsa -in rsapair.pem -outform PEM -pubout -out public.pem
+
 # 导出私钥
 openssl rsa -in rsapair.pem -out private.pem -outform PEM
+
 ```
 
 ### 查看产生的秘钥
@@ -145,6 +151,7 @@ sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/etcd-client-key.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/etcd-client.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/public.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/private.pem  .
+
 ```
 
 ### 查看下载的证书与秘钥 (Master01, Master02 and Master03)
@@ -343,6 +350,7 @@ rules:
     omitStages:
       - RequestReceived
 EOF
+
 ```
 
 
@@ -401,16 +409,19 @@ etcd_host_3=10.1.1.103
   --tls-private-key-file /opt/kubernetes/server/cert/kubernetes-key.pem \
   --v 2
 EOF
+
 ```
 
 ### 授权可执行权限
 ```shell
 chmod +x /opt/kubernetes/server/bin/kube-apiserver.sh
+
 ```
 
 ### 创建目录
 ```shell
 mkdir -p /data/logs/kubernetes/kube-apiserver
+
 ```
 
 ### 创建supervisord的kube-apiserver.ini文件
@@ -436,6 +447,7 @@ stdout_capture_maxbytes=1MB   ; 设定capture管道的大小(default 0)
 killasgroup=true
 stopasgroup=true
 EOF
+
 ```
 
 ### 更新配置并查看状态(master01, master02, master03)

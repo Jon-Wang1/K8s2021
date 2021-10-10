@@ -26,20 +26,27 @@ cfssl gencert \
       -config=ca-config.json \
       -profile=client \
       kube-proxy-csr.json |cfssl-json -bare kube-proxy-client
+
 ```
 
-### 配置kube-proxy与apiserver通讯(Node01, Node02和Node03)
+----------------------------------注意此处切换设备--------------------------------------
+
+### 下载证书与秘钥 (Node01, Node02和Node03)
 ```shell script
 cd /opt/kubernetes/node/cert
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/kube-proxy-client.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/kube-proxy-client-key.pem .
 
+```
+
+### 配置并且创建kubeconfig文件(Node01, Node02和Node03)
+```shell
 cd /opt/kubernetes/node/conf/
 
 kubectl config set-cluster qytang-k8s-cluster \
     --certificate-authority=/opt/kubernetes/node/cert/ca.pem \
     --embed-certs=true \
-    --server=https://kubernetes.qytanghost.com:7443 \
+    --server=https://kubernetes.qytanghost.com:6443 \
     --kubeconfig=kube-proxy.kubeconfig
 
 kubectl config set-credentials qytang-kube-proxy \
@@ -54,7 +61,10 @@ kubectl config set-context qytang-myk8s-context \
     --kubeconfig=kube-proxy.kubeconfig
 
 kubectl config use-context qytang-myk8s-context --kubeconfig=kube-proxy.kubeconfig
+
 ```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ### RBAC配置 (任何Master)
 ```shell script
@@ -73,9 +83,11 @@ subjects:
   name: qytang-kube-proxy
 EOF
 
-kubectl create -f /opt/kubernetes/server/conf/k8s-proxy.yaml
+kubectl apply -f /opt/kubernetes/server/conf/k8s-proxy.yaml
 
 ```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 # 创建开机ipvs脚本 (Node01, Node02和Node03)
 ```shell script
@@ -95,6 +107,7 @@ EOF
 sh /etc/ipvs.sh 
 
 lsmod |grep ip_vs
+
 ```
 
 ### kube-proxy启动脚本 (Node01)
@@ -108,6 +121,7 @@ cat >/opt/kubernetes/node/bin/kube-proxy.sh <<'EOF'
   --ipvs-scheduler=rr \
   --kubeconfig /opt/kubernetes/node/conf/kube-proxy.kubeconfig
 EOF
+
 ```
 
 ### kube-proxy启动脚本 (Node02)
@@ -121,6 +135,7 @@ cat >/opt/kubernetes/node/bin/kube-proxy.sh <<'EOF'
   --ipvs-scheduler=rr \
   --kubeconfig /opt/kubernetes/node/conf/kube-proxy.kubeconfig
 EOF
+
 ```
 
 ### kube-proxy启动脚本 (Node03)
@@ -134,6 +149,7 @@ cat >/opt/kubernetes/node/bin/kube-proxy.sh <<'EOF'
   --ipvs-scheduler=rr \
   --kubeconfig /opt/kubernetes/node/conf/kube-proxy.kubeconfig
 EOF
+
 ```
 
 ### 启动kube-proxy服务 (Node01, Node02和Node03)
@@ -165,7 +181,15 @@ mkdir -p /data/logs/kubernetes/kube-proxy
 supervisorctl update
 supervisorctl status
 
+```
+
+### anzhuang ipvs管理工具(Node01, Node02和Node03)
+```shell
 yum install ipvsadm -y
+
+```
+
+### 查看ipvs（IP Virtual Server）状态(Node01, Node02和Node03)
 [root@node01 conf]# ipvsadm -Ln
 IP Virtual Server version 1.2.1 (size=4096)
 Prot LocalAddress:Port Scheduler Flags
@@ -174,11 +198,10 @@ TCP  192.168.0.1:443 nq
   -> 10.1.1.101:6443              Masq    1      0          0         
   -> 10.1.1.102:6443              Masq    1      0          0         
   -> 10.1.1.103:6443              Masq    1      0          0   
-```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ###查看svc (任何Master)
-```shell script
 root@localhost ~]# kubectl get svc
 NAME         TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
 kubernetes   ClusterIP   192.168.0.1   <none>        443/TCP   13h
-```

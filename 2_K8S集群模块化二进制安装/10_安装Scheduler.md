@@ -30,6 +30,7 @@ cfssl gencert -ca=ca.pem \
               -config=ca-config.json \
               -profile=peer scheduler-csr.json \
               |cfssl-json -bare scheduler
+
 ```
 
 ### 查看scheduler证书 (dnsca)
@@ -47,6 +48,7 @@ cd /opt/kubernetes/server/cert
 
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/scheduler-key.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/scheduler.pem .
+
 ```
 
 ### 创建scheduler的kubeconfig文件 (Master01, Master02 and Master03)
@@ -55,7 +57,7 @@ cd /opt/kubernetes/server/conf/
 kubectl config set-cluster kubernetes \
   --certificate-authority=/opt/kubernetes/server/cert/ca.pem \
   --embed-certs=true \
-  --server=https://kubernetes.qytanghost.com:7443 \
+  --server=https://kubernetes.qytanghost.com:6443 \
   --kubeconfig=kube-controller-manager.kubeconfig
   
 kubectl config set-credentials system:kube-scheduler \
@@ -73,7 +75,7 @@ kubectl config use-context system:kube-scheduler --kubeconfig=kube-scheduler.kub
 
 ```
 
-### 创建 kube-scheduler 配置文件
+### 创建 kube-scheduler 配置文件(Master01, Master02 and Master03)
 ```shell
 cat >/opt/kubernetes/server/conf/kube-scheduler.yaml <<EOF
 apiVersion: kubescheduler.config.k8s.io/v1beta1
@@ -89,6 +91,7 @@ leaderElection:
   leaderElect: true
 metricsBindAddress: 0.0.0.0:10251
 EOF
+
 ```
 
 ### scheduler启动脚本 (Master01, Master02 and Master03)
@@ -103,9 +106,10 @@ cat >/opt/kubernetes/server/bin/kube-scheduler.sh <<'EOF'
   --client-ca-file=/opt/kubernetes/server/cert/ca.pem \
   --leader-elect  \
   --log-dir /data/logs/kubernetes/kube-scheduler \
-  --master https://kubernetes.qytanghost.com:7443 \
+  --master https://kubernetes.qytanghost.com:6443 \
   --v 2
 EOF
+
 ```
 
 # kube-scheduler命令选项
@@ -114,11 +118,13 @@ https://kubernetes.io/docs/reference/command-line-tools-reference/kube-scheduler
 # 授权可执行权限(Master01, Master02 and Master03)
 ```shell
 chmod +x  /opt/kubernetes/server/bin/kube-scheduler.sh
+
 ```
 
 ### 创建目录(Master01, Master02 and Master03)
 ```shell
 mkdir -p /data/logs/kubernetes/kube-scheduler
+
 ```
 
 ### 创建supervisord的kube-scheduler.ini文件(Master01, Master02 and Master03)
@@ -152,6 +158,7 @@ EOF
 ```shell
 supervisorctl update
 supervisorctl status
+
 ```
 
 ### 查看状态(Master01, Master02 and Master03)

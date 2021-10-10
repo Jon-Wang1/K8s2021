@@ -29,7 +29,7 @@ spec:
         ports:
         - name: web
           containerPort: 80
-          hostPort: 81
+          hostPort: 6868
 #        - name: websecure
 #          containerPort: 443
 #          hostPort: 443

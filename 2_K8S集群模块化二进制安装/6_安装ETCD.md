@@ -6,10 +6,7 @@ cat >/opt/certs/etcd-peer-csr.json <<EOF
     "hosts": [
         "10.1.1.101",
         "10.1.1.102",
-        "10.1.1.103",
-        "master01.qytanghost.com",
-        "master02.qytanghost.com",
-        "master03.qytanghost.com"
+        "10.1.1.103"
     ],
     "key": {
         "algo": "rsa",
@@ -134,6 +131,7 @@ etcd_name_host3=master03.qytanghost.com
     --peer-trusted-ca-file ./certs/ca.pem \
     --log-output stdout
 EOF
+
 ```
 
 ### etcd启动脚本(master02)
@@ -165,6 +163,7 @@ etcd_name_host3=master03.qytanghost.com
     --peer-trusted-ca-file ./certs/ca.pem \
     --log-output stdout
 EOF
+
 ```
 
 ### etcd启动脚本(master03)
@@ -196,6 +195,7 @@ etcd_name_host3=master03.qytanghost.com
     --peer-trusted-ca-file ./certs/ca.pem \
     --log-output stdout
 EOF
+
 ```
 
 ### 使用supervisor启动etc脚本(master01, master02, master03)
@@ -228,6 +228,7 @@ stdout_capture_maxbytes=1MB   ; 设定capture管道的大小(default 0)
 killasgroup=true
 stopasgroup=true
 EOF
+
 ```
 
 ### 更新并查看状态(master01, master02, master03)

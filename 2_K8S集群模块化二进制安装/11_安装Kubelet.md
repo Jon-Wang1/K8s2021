@@ -1,4 +1,4 @@
-### 签发证书 (dnsca)
+### 签发证书 kubelet是server类型 kubelet-client为client类型 (dnsca)
 ```shell script
 cd /opt/certs/
 cat >/opt/certs/kubelet-csr.json <<EOF
@@ -63,7 +63,10 @@ cfssl gencert \
       -config=ca-config.json \
       -profile=client \
       kubelet-client-csr.json | cfssl-json -bare kubelet-client
-      
+
+```
+
+### 查看签发的证书(dnsca)
 [root@localhost certs]# ll
 # kubelet-client 用于与APIServer进行通信
 # 关注CN, 他会在RBAC中进行绑定
@@ -77,7 +80,6 @@ cfssl gencert \
 -rw-r--r-- 1 root root  370 10月 25 04:36 kubelet-csr.json
 -rw------- 1 root root 1675 10月 25 04:36 kubelet-key.pem
 -rw-r--r-- 1 root root 1797 10月 25 04:36 kubelet.pem
-```
 
 ----------------------------------注意此处切换设备--------------------------------------
 
@@ -92,6 +94,10 @@ cd /opt
 mv /opt/kubernetes/ /opt/kubernetes-v1.20.11-linux-amd64
 ln -s /opt/kubernetes-v1.20.11-linux-amd64/ /opt/kubernetes
 
+```
+
+### 下载证书文件(Node01, Node02和Node03)
+```shell
 mkdir -p /opt/kubernetes/node/cert
 cd /opt/kubernetes/node/cert
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/ca.pem .
@@ -99,12 +105,12 @@ sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/kubelet.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/kubelet-key.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/kubelet-client.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/kubelet-client-key.pem .
+
 ```
 
-### 配置kubelet与apiserver通讯(Node01, Node02和Node03)
+### 配置并且创建kubeconfig文件(Node01, Node02和Node03)
+### embed-certs为true表示将--certificate-authority证书写入到kubeconfig中
 ```shell script
-# embed-certs为true表示将--certificate-authority证书写入到kubeconfig中
-
 mkdir -p /opt/kubernetes/node/conf
 cd /opt/kubernetes/node/conf/
 
@@ -113,7 +119,7 @@ ln -s /opt/kubernetes/node/bin/kubectl /usr/bin/kubectl
 kubectl config set-cluster qytang-k8s-cluster \
     --certificate-authority=/opt/kubernetes/node/cert/ca.pem \
     --embed-certs=true \
-    --server=https://kubernetes.qytanghost.com:7443 \
+    --server=https://kubernetes.qytanghost.com:6443 \
     --kubeconfig=kubelet.kubeconfig
 
 kubectl config set-credentials qytang-k8s-credentials \
@@ -128,15 +134,15 @@ kubectl config set-context myk8s-context \
     --kubeconfig=kubelet.kubeconfig
 
 kubectl config use-context myk8s-context --kubeconfig=kubelet.kubeconfig
+
 ```
 
 # 查看产生的配置文件
-```shell script
 [root@node03 conf]# pwd
 /opt/kubernetes/node/conf
 [root@node03 conf]# cat kubelet.kubeconfig 
-~~~忽略输出~~~
-```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ### RBAC配置 (任何一个Master)
 ```shell script
@@ -155,22 +161,21 @@ subjects:
   name: qytang-k8s-node
 EOF
 
-kubectl create -f /opt/kubernetes/server/conf/k8s-node.yaml
+kubectl apply -f /opt/kubernetes/server/conf/k8s-node.yaml
+
 ```
 
 ### 查看系统默认的ROLES
-```shell script
 [root@master01 cert]# kubectl get clusterroles
-~~~忽略大量内容~~~
-system:node                                            ClusterRole/system:node                                            45m
-```
+[忽略其它内容]
+system:node                                             2021-10-10T07:00:02Z
 
 ### 查看clusterrolebinding
-```shell script
 [root@master01 cert]# kubectl get clusterrolebinding
-~~~忽略大量内容~~~
-qytang-k8s-node                                        ClusterRole/system:node                                            69s
-```
+[忽略其它内容]
+qytang-k8s-node                                         ClusterRole/system:node        80s
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ### kubelet启动脚本 (Node01)
 ```shell script
@@ -198,7 +203,10 @@ cat >/opt/kubernetes/node/bin/kubelet.sh <<'EOF'
   --pod-infra-container-image harbor.qytanghost.com/public/pause:latest \
   --root-dir /data/kubelet
 EOF
+
 ```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ### kubelet启动脚本 (Node02)
 ```shell script
@@ -226,7 +234,10 @@ cat >/opt/kubernetes/node/bin/kubelet.sh <<'EOF'
   --pod-infra-container-image harbor.qytanghost.com/public/pause:latest \
   --root-dir /data/kubelet
 EOF
+
 ```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ### kubelet启动脚本 (Node03)
 ```shell script
@@ -254,14 +265,20 @@ cat >/opt/kubernetes/node/bin/kubelet.sh <<'EOF'
   --pod-infra-container-image harbor.qytanghost.com/public/pause:latest \
   --root-dir /data/kubelet
 EOF
+
 ```
 
-### 下载pause镜像 (Harbor)
+----------------------------------注意此处切换设备--------------------------------------
+
+### 下载pause镜像 (任何一个节点，但是需要docker login harbor.qytanghost.com)
 ```shell script
 docker pull kubernetes/pause
 docker tag kubernetes/pause harbor.qytanghost.com/public/pause
 docker push harbor.qytanghost.com/public/pause
+
 ```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ### 启动kubelet服务 (Node01, Node02和Node03)
 ```shell script
@@ -297,24 +314,56 @@ EOF
 
 supervisorctl update
 supervisorctl status
+
 ```
 
-### 查看node状态, 并打标签 (任何一个Master)
+----------------------------------注意此处切换设备--------------------------------------
+
+### 查看node状态 (任何一个Master)
+[root@master01 ~]# kubectl get node
+NAME                    STATUS     ROLES    AGE    VERSION
+node01.qytanghost.com   NotReady   <none>   2m3s   v1.20.11
+node02.qytanghost.com   NotReady   <none>   2m2s   v1.20.11
+node03.qytanghost.com   NotReady   <none>   2m5s   v1.20.11
+
+
+### 为node打标签 (任何一个Master)
 ```shell script
 kubectl label node node01.qytanghost.com node-role.kubernetes.io/node=
 kubectl label node node02.qytanghost.com node-role.kubernetes.io/node=
 kubectl label node node03.qytanghost.com node-role.kubernetes.io/node=
 
-# 如果即是计算节点也是Master, 可以再打上master的label
-kubectl label node node01.host.com node-role.kubernetes.io/master=
-
-# 删除标签
-kubectl label node node01.host.com node-role.kubernetes.io/master-
-
-# 查看节点, 由于CNI还未安装的原因, 所以状态为未就绪
-[root@master03 ~]# kubectl get nodes
-NAME              STATUS     ROLES   AGE   VERSION
-node01.host.com   NotReady   node    46s   v1.18.9
-node02.host.com   NotReady   node    45s   v1.18.9
-node03.host.com   NotReady   node    46s   v1.18.9
 ```
+
+### 查看node状态 (任何一个Master)
+[root@master01 ~]# kubectl get node
+NAME                    STATUS     ROLES   AGE     VERSION
+node01.qytanghost.com   NotReady   node    2m20s   v1.20.11
+node02.qytanghost.com   NotReady   node    2m19s   v1.20.11
+node03.qytanghost.com   NotReady   node    2m22s   v1.20.11
+
+
+# 可以考虑为node打上master的label (任何一个Master)
+```shell script
+kubectl label node node01.qytanghost.com node-role.kubernetes.io/master=
+```
+
+### 查看node状态 (任何一个Master)
+[root@master01 ~]# kubectl get node
+NAME                    STATUS     ROLES         AGE     VERSION
+node01.qytanghost.com   NotReady   master,node   4m44s   v1.20.11
+node02.qytanghost.com   NotReady   node          4m43s   v1.20.11
+node03.qytanghost.com   NotReady   node          4m46s   v1.20.11
+
+# 删除标签 (任何一个Master)
+```shell script
+kubectl label node node01.qytanghost.com node-role.kubernetes.io/master-
+```
+
+# 查看节点, 由于CNI还未安装的原因, 所以状态为未就绪 (任何一个Master)
+[root@master01 ~]# kubectl get node
+NAME                    STATUS     ROLES   AGE     VERSION
+node01.qytanghost.com   NotReady   node    5m46s   v1.20.11
+node02.qytanghost.com   NotReady   node    5m45s   v1.20.11
+node03.qytanghost.com   NotReady   node    5m48s   v1.20.11
+

@@ -26,6 +26,40 @@ cfssl gencert -ca=ca.pem \
               -config=ca-config.json \
               -profile=peer admin-csr.json \
               |cfssl-json -bare admin
+
+```
+
+### host域 zone配置文件(dnsca)
+```shell script
+cat > /var/named/qytanghost.com.zone <<'EOF'
+$ORIGIN qytanghost.com.
+$TTL 600    ;   10 minutes
+@       IN SOA  dnsca.qytanghost.com. dnsadmin.qytanghost.com. (
+                                        2020090901      ; serial
+                                        10800           ; refresh (3 hours)
+                                        900             ; retry (15 minutes)
+                                        604800          ; expire (1 week)
+                                        86400           ; minimum (1 day)
+                                        )
+        NS      dnsca.qytanghost.com.
+$TTL 60    ;   1 minute
+dnsca                       A   10.1.1.219
+master01                    A   10.1.1.101
+master02                    A   10.1.1.102
+master03                    A   10.1.1.103
+node01                      A   10.1.1.201
+node02                      A   10.1.1.202
+node03                      A   10.1.1.203
+harbor                      A   10.1.1.220
+nginx01                     A   10.1.1.11
+nginx02                     A   10.1.1.12
+gitlab                      A   10.1.1.230
+kubernetes                  A   10.1.1.10
+mgmtwin7                    A   10.1.1.50
+mgmtcentos                  A   10.1.1.60
+EOF
+
+systemctl restart named
 ```
 
 ----------------------------------注意此处切换设备--------------------------------------
@@ -36,17 +70,22 @@ cd /opt/kubernetes/server/cert
 
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/admin-key.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/admin.pem .
+
 ```
 
 ### 配置集群参数 (Master01, Master02, Master03)
 ```shell
 ln -s /opt/kubernetes/server/bin/kubectl /usr/bin/kubectl
 
+mkdir -p ~/.kube
+cd ~/.kube/
+
 kubectl config set-cluster kubernetes \
   --certificate-authority=/opt/kubernetes/server/cert/ca.pem \
   --embed-certs=true \
-  --server=https://kubernetes.qytanghost.com:7443\
+  --server=https://kubernetes.qytanghost.com:6443\
   --kubeconfig=kubectl.kubeconfig
+
 ```
 
 ###设置客户端认证参数 (Master01, Master02, Master03)
@@ -56,6 +95,7 @@ kubectl config set-credentials admin \
   --client-key=/opt/kubernetes/server/cert/admin-key.pem \
   --embed-certs=true \
   --kubeconfig=kubectl.kubeconfig
+
 ```
 ###设置上下文参数 (Master01, Master02, Master03)
 ```shell
@@ -63,19 +103,26 @@ kubectl config set-context kubernetes \
   --cluster=kubernetes \
   --user=admin \
   --kubeconfig=kubectl.kubeconfig
+
 ```
 
 ###设置默认上下文 (Master01, Master02, Master03)
 ```shell
+
 kubectl config use-context kubernetes --kubeconfig=kubectl.kubeconfig
-mkdir -p ~/.kube
 cp kubectl.kubeconfig ~/.kube/config
 ```
 
 ### 测试kubectl
-```shell
-kubectl get cs
-```
+[root@master01 .kube]# kubectl get cs
+Warning: v1 ComponentStatus is deprecated in v1.19+
+NAME                 STATUS      MESSAGE                                                                                       ERROR
+scheduler            Unhealthy   Get "http://127.0.0.1:10251/healthz": dial tcp 127.0.0.1:10251: connect: connection refused
+controller-manager   Unhealthy   Get "http://127.0.0.1:10252/healthz": dial tcp 127.0.0.1:10252: connect: connection refused
+etcd-1               Healthy     {"health":"true"}
+etcd-0               Healthy     {"health":"true"}
+etcd-2               Healthy     {"health":"true"}
+
 
 ----------------------------------注意此处切换设备--------------------------------------
 
@@ -112,6 +159,7 @@ cfssl gencert -ca=ca.pem \
               -config=ca-config.json \
               -profile=peer controller-manager-csr.json \
               |cfssl-json -bare controller-manager
+
 ```
 
 ### 查看controller-manager证书 (dnsca)
@@ -133,6 +181,7 @@ cd /opt/kubernetes/server/cert
 
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/controller-manager-key.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/controller-manager.pem .
+
 ```
 
 ### 创建controller-manager的kubeconfig文件 (Master01, Master02 and Master03)
@@ -142,7 +191,7 @@ cd /opt/kubernetes/server/conf/
 kubectl config set-cluster kubernetes \
   --certificate-authority=/opt/kubernetes/server/cert/ca.pem \
   --embed-certs=true \
-  --server=https://kubernetes.qytanghost.com:7443 \
+  --server=https://kubernetes.qytanghost.com:6443 \
   --kubeconfig=kube-controller-manager.kubeconfig
   
 kubectl config set-credentials system:kube-controller-manager \
@@ -157,6 +206,7 @@ kubectl config set-context system:kube-controller-manager \
   --kubeconfig=kube-controller-manager.kubeconfig
   
 kubectl config use-context system:kube-controller-manager --kubeconfig=kube-controller-manager.kubeconfig
+
 ```
 
 
@@ -170,7 +220,7 @@ cat >/opt/kubernetes/server/bin/kube-controller-manager.sh <<'EOF'
   --allocate-node-cidrs=true \
   --cluster-cidr 172.16.0.0/16 \
   --service-cluster-ip-range 192.168.0.0/16 \
-  --master https://kubernetes.qytanghost.com:7443 \
+  --master https://kubernetes.qytanghost.com:6443 \
   --leader-elect \
   --bind-address=0.0.0.0 \
   --use-service-account-credentials=true \
@@ -181,10 +231,11 @@ cat >/opt/kubernetes/server/bin/kube-controller-manager.sh <<'EOF'
   --authentication-kubeconfig=/opt/kubernetes/server/conf/kube-controller-manager.kubeconfig \
   --authorization-kubeconfig=/opt/kubernetes/server/conf/kube-controller-manager.kubeconfig \
   --kubeconfig=/opt/kubernetes/server/conf/kube-controller-manager.kubeconfig \
-  --master https://kubernetes.qytanghost.com:7443 \
+  --master https://kubernetes.qytanghost.com:6443 \
   --service-account-private-key-file /opt/kubernetes/server/cert/private.pem \
   --v 2
 EOF
+
 ```
 ### kube-controller-manager命令选项
 https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controller-manager/
@@ -194,11 +245,13 @@ https://kubernetes.io/docs/reference/command-line-tools-reference/kube-controlle
 ### 授权可执行权限(Master01, Master02 and Master03)
 ```shell
 chmod +x /opt/kubernetes/server/bin/kube-controller-manager.sh
+
 ```
 
 ### 创建目录(Master01, Master02 and Master03)
 ```shell
 mkdir -p /data/logs/kubernetes/kube-controller-manager
+
 ```
 
 ### 创建supervisord的kube-apiserver.ini文件(Master01, Master02 and Master03)
@@ -225,12 +278,14 @@ stdout_capture_maxbytes=1MB   ; 设定capture管道的大小(default 0)
 killasgroup=true
 stopasgroup=true
 EOF
+
 ```
 
 ### 更新配置并查看状态(Master01, Master02 and Master03)
 ```shell
 supervisorctl update
 supervisorctl status
+
 ```
 
 ### 查看状态(Master01, Master02 and Master03)

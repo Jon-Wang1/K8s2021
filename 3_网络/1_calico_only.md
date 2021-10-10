@@ -11,24 +11,66 @@ kubelet 启动参数
   --network-plugin=cni : 网络插件使用cni
 ```
 
-### 下载并上传镜像 (Harbor)
+----------------------------------注意此处切换设备--------------------------------------
+
+### 下载并上传镜像 (任何一个节点，但是需要docker login harbor.qytanghost.com)
 ```shell script
 # calico_only
 docker pull quay.io/tigera/operator:v1.20.4
 docker pull calico/ctl:v3.20.2
+docker tag quay.io/tigera/operator:v1.20.4 harbor.qytanghost.com/public/calico_operator:v1.20.4
+docker tag calico/ctl:v3.20.2 harbor.qytanghost.com/public/calico_ctl:v3.20.2
+docker push harbor.qytanghost.com/public/calico_operator:v1.20.4
+docker push harbor.qytanghost.com/public/calico_ctl:v3.20.2
+
 ```
 
-### 应用资源配置清单
+----------------------------------注意此处切换设备--------------------------------------
+
+### NGINX配置 (mgmtcentos)
 ```shell script
-# 安装calico
-# https://docs.projectcalico.org/getting-started/kubernetes/quickstart
+yum install -y nginx
 
-kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
-kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
+systemctl start nginx
+systemctl enable nginx
 
-# 安装calicoctl
+cat > /etc/nginx/conf.d/mgmtcentos.qytanghost.com.conf <<'EOF'
+
+server {
+        listen          80;
+        server_name     mgmtcentos.qytanghost.com;
+
+        location / {
+                autoindex       on;
+                default_type    text/plain;
+                root            /K8S2021/yaml_dockerfile/k8s-yaml;
+        }
+}
+EOF
+nginx -s reload
+
+```
+
+----------------------------------注意此处切换设备--------------------------------------
+
+### mgmtwin7上传整个项目到mgmtcentos
+
+### mgmtwin7测试是否可以打开http://mgmtcentos.qytanghost.com/
+
+----------------------------------注意此处切换设备--------------------------------------
+### 应用资源配置清单,安装calico(任何一个Master)
+### https://docs.projectcalico.org/getting-started/kubernetes/quickstart
+```shell script
+kubectl create -f http://mgmtcentos.qytanghost.com/calico/tigera-operator.yaml
+kubectl create -f http://mgmtcentos.qytanghost.com/calico/custom-resources.yaml
+
+```
+
+### 应用资源配置清单,安装calicoctl(任何一个Master)
 # https://docs.projectcalico.org/getting-started/clis/calicoctl/install
-kubectl apply -f https://docs.projectcalico.org/manifests/calicoctl.yaml
+```shell script
+kubectl apply -f http://mgmtcentos.qytanghost.com/calico/calicoctl.yaml
+
 ```
 
 ### 查看命名空间
@@ -94,30 +136,7 @@ kubectl exec -it calicoctl -n kube-system -- calicoctl get ippool -o wide
 # 删除默认的地址池
 kubectl exec -it calicoctl -n kube-system -- calicoctl delete ippools default-ipv4-ippool
 
-### NGINX配置 (dnsca)
-```shell script
-yum install -y nginx
 
-systemctl start nginx
-systemctl enable nginx
-
-cat > /etc/nginx/conf.d/mgmtcentos.qytanghost.com.conf <<'EOF'
-
-server {
-        listen          80;
-        server_name     mgmtcentos.qytanghost.com;
-
-        location / {
-                autoindex       on;
-                default_type    text/plain;
-                root            /K8S2021/yaml_dockerfile/k8s-yaml;
-        }
-}
-EOF
-nginx -s reload
-```
-
-# 此处测试是否可以打开http://mgmtcentos.qytanghost.com/
 ```
 
 # 下载资源配置清单

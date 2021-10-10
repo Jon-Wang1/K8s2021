@@ -151,7 +151,7 @@ stream {
         server 10.1.1.103:6443     max_fails=3 fail_timeout=30s;
     }
     server {
-        listen 7443;
+        listen 6443;
         proxy_connect_timeout 2s;
         proxy_timeout 900s;
         proxy_pass kube-apiserver;
@@ -164,9 +164,9 @@ EOF
 ```shell script
 cat > /etc/nginx/conf.d/qytang.com.conf <<'EOF'
 upstream default_backend_traefik {
-    server 10.1.1.201:81    max_fails=3 fail_timeout=10s;
-    server 10.1.1.202:81    max_fails=3 fail_timeout=10s;
-    server 10.1.1.203:81    max_fails=3 fail_timeout=10s;
+    server 10.1.1.201:6868    max_fails=3 fail_timeout=10s;
+    server 10.1.1.202:6868    max_fails=3 fail_timeout=10s;
+    server 10.1.1.203:6868    max_fails=3 fail_timeout=10s;
 }
 server {
     listen      80;

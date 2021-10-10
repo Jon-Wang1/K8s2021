@@ -1,6 +1,7 @@
 ### 安装NGINX （nginx01, nginx02)
 ```shell script
 yum install -y nginx
+
 ```
 
 ### 配置文件 （nginx01, nginx02)
@@ -14,7 +15,7 @@ stream {
         server 10.1.1.103:6443     max_fails=3 fail_timeout=30s;
     }
     server {
-        listen 7443;
+        listen 6443;
         proxy_connect_timeout 2s;
         proxy_timeout 900s;
         proxy_pass kube-apiserver;
@@ -24,6 +25,7 @@ EOF
 
 systemctl start nginx
 systemctl enable nginx
+
 ```
 
 ### 配置KEEPALIVE （nginx01, nginx02)
@@ -47,6 +49,7 @@ fi
 EOF
 
 chmod +x /etc/keepalived/check_port.sh
+
 ```
 
 ### KEEPALIVE主 （nginx01)
@@ -57,7 +60,7 @@ global_defs {
    router_id 10.1.1.11
 }
 vrrp_script chk_nginx {
-    script "/etc/keepalived/check_port.sh 7443"
+    script "/etc/keepalived/check_port.sh 6443"
     interval 2
     weight -20
 }
@@ -82,6 +85,7 @@ vrrp_instance VI_1 {
     }
 }
 EOF
+
 ```
 
 ### KEEPALIVE从 （nginx02)
@@ -92,7 +96,7 @@ global_defs {
    router_id 10.1.1.12
 }
 vrrp_script chk_nginx {
-    script "/etc/keepalived/check_port.sh 7443"
+    script "/etc/keepalived/check_port.sh 6443"
     interval 2
     weight -20
 }
@@ -118,9 +122,10 @@ vrrp_instance VI_1 {
 }
 EOF
 
-### 启动服务
 ```
+### 启动服务（nginx01, nginx02)
 systemctl start keepalived
 systemctl enable keepalived
 systemctl status keepalived
+
 ```
