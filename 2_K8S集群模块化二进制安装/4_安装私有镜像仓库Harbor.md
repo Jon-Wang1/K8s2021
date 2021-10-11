@@ -23,6 +23,7 @@ cat >/opt/certs/harbor-csr.json <<EOF
     ]
 }
 EOF
+
 ```
 
 ### 进入目录签发Harbor证书(dnsca)
@@ -33,15 +34,14 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem \
   -config=ca-config.json -profile=server \
   harbor-csr.json |cfssl-json -bare harbor
 
+```
+
+### 查看签发的证书(dnsca)
 [root@dnsca certs]# ll
-total 36
-~~~忽略其它~~~
 -rw-r--r-- 1 root root 1115 Oct  8 09:22 harbor.csr
 -rw-r--r-- 1 root root  376 Oct  8 09:21 harbor-csr.json
 -rw------- 1 root root 1675 Oct  8 09:22 harbor-key.pem
 -rw-r--r-- 1 root root 1793 Oct  8 09:22 harbor.pem
-
-```
 
 ----------------------------------注意此处切换设备--------------------------------------
 
@@ -56,6 +56,7 @@ wget https://github.com/goharbor/harbor/releases/download/v2.3.3/harbor-offline-
 tar xf harbor-offline-installer-v2.3.3.tgz  -C /opt/
 
 cd /opt
+
 ```
 
 ### 查看解压目录（harbor)
@@ -68,11 +69,18 @@ drwxr-xr-x 2 root root  49 Oct  8 12:57 src
 
 
 ### 移动harbor目录到有版本号的目录（harbor)
+```shell
 mv harbor/ harbor-v2.3.3
 
+```
+
 ### 软链接回/opt/harbor,这个操作便于后续升级（harbor)
+```shell
 ln -s /opt/harbor-v2.3.3/ /opt/harbor
 
+```
+
+### 查看目录与软链接（harbor)
 [root@harbor opt]# ll
 total 0
 drwx--x--x 4 root root  28 Oct  8 12:55 containerd
@@ -82,7 +90,7 @@ drwxr-xr-x 2 root root  49 Oct  8 12:57 src
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-### 下载证书(harbor, gitlab, master01, master02, master03, node01, node02, node03)
+### 下载证书(harbor, gitlab, mgmtcentos, nginx01, nginx02, master01, master02, master03, node01, node02, node03)
 [root@harbor certs]# ssh root@dnsca.qytanghost.com
 The authenticity of host 'dnsca.qytanghost.com (10.1.1.219)' can't be established.
 ECDSA key fingerprint is SHA256:jWlSzcu5QdgKgh19Haz/pXf4AfIwbt9cfzDERxuzwCs.
@@ -94,12 +102,6 @@ Last login: Fri Oct  8 09:08:32 2021 from 10.1.1.50
 ###注意一定要退出
 [root@dnsca ~]# exit
 logout
-
-### 下次考虑次方法
-[root@k8s-master01 ~]# ssh-keygen -t rsa
-[root@k8s-master01 ~]# cp /root/.ssh/id_rsa.pub /root/.ssh/authorized_keys
-[root@k8s-master01 ~]# ssh-copy-id -i /root/.ssh/id_rsa.pub -p22 root@k8s-master01
-[root@k8s-master01 ~]# ssh-copy-id -i /root/.ssh/id_rsa.pub -p22 root@k8s-master02
 
 ----------------------------------注意此处切换设备--------------------------------------
 
@@ -118,10 +120,10 @@ total 610344
 ```shell
 cd /opt/harbor
 vim prepare
+
 ```
 
-```shell
-~~~其它省略~~~
+### 具体修改内容
 docker run --rm -v $input_dir:/input \
                     -v $data_path:/data \
                     -v $harbor_prepare_path:/compose_location \
@@ -129,15 +131,14 @@ docker run --rm -v $input_dir:/input \
                     -v /opt/harbor/certs:/hostfs \ # 修改部分
                     --privileged \
                     goharbor/prepare:v2.3.3 prepare $@
-~~~其它省略~~~
 
-映射关系:
+
+### 映射关系:
 /opt/harbor/certs/harbor.pem
 /hostfs/harbor.pem
 
 # harbor.yml内的路径
 /harbor.pem
-```
 
 ### 修改harbor.yml(harbor)
 ```shell
@@ -146,7 +147,7 @@ cp harbor.yml.tmpl harbor.yml
 vim harbor.yml
 ```
 
-```shell
+### 具体修改内容
 hostname: harbor.qytanghost.com
 
 https:
@@ -163,11 +164,11 @@ data_volume: /data/harbor
 log:
   local:
     location: /data/harbor/logs
-```
 
 ### 创建harbor日志目录(harbor)
 ```shell
 mkdir -p /data/harbor/logs
+
 ```
 
 ### 下载根证书与个人证书（harbor）
@@ -183,17 +184,19 @@ sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/harbor.pem .
 cat ca.pem >> qytanghost.com.crt
 cp qytanghost.com.crt /etc/pki/ca-trust/source/anchors/qytanghost.com.crt
 update-ca-trust
+
 ```
 
 ### 安装Harbor(harbor)
 ```shell
 cd /opt/harbor
 ./install.sh 
+
 ```
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-### 下载根证书(gitlab, master01, master02, master03, node01, node02, node03)
+### 下载根证书(gitlab, mgmtcentos, master01, master02, master03, node01, node02, node03)
 ```shell
 yum install -y epel-release
 yum install -y sshpass
@@ -205,7 +208,18 @@ sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/ca.pem .
 cat ca.pem >> qytanghost.com.crt
 cp qytanghost.com.crt /etc/pki/ca-trust/source/anchors/qytanghost.com.crt
 update-ca-trust
+
 ```
+### docker login harbor.qytanghost.com测试(gitlab, mgmtcentos, master01, master02, master03, node01, node02, node03)
+[root@master02 certs]# docker login harbor.qytanghost.com
+Username: admin
+Password:
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+
 ----------------------------------注意此处切换设备--------------------------------------
 
 ### 从dnsca下载根证书ca.pem到管理WIN7(管理Win7）[详细操作参考PPT]
@@ -230,24 +244,28 @@ Login Succeeded
 ```shell
 docker pull centos
 docker pull nginx
+
 ```
 
 ### 修改镜像标签(harbor)
 ```shell
 docker tag centos harbor.qytanghost.com/public/centos
 docker tag nginx harbor.qytanghost.com/public/nginx
+
 ```
 
 ### 推送镜像到私有仓库(harbor)
 ```shell
 docker push harbor.qytanghost.com/public/centos
 docker push harbor.qytanghost.com/public/nginx
+
 ```
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-### 其他linux测试从私有仓库拉取镜像(gitlab, master01, master02, master03, node01, node02, node03)
+### 其他linux测试从私有仓库拉取镜像(gitlab, mgmtcentos, master01, master02, master03, node01, node02, node03)
 ```shell
 docker pull harbor.qytanghost.com/public/centos
 docker pull harbor.qytanghost.com/public/nginx
+
 ```
