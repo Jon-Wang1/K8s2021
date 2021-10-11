@@ -119,6 +119,44 @@ cfssl gencert -ca=ca.pem \
 -rw------- 1 root root 1679 Oct  9 08:35 kubernetes-key.pem
 -rw-r--r-- 1 root root 2009 Oct  9 08:35 kubernetes.pem
 
+### 申请并颁发metrics-server证书 (dnsca)[由于API server没有安装网络,无法和metric server通讯所以无需安装]
+```shell
+cat > /opt/certs/proxy-client-csr.json <<EOF
+{
+  "CN": "aggregator",
+  "hosts": [],
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+      {
+            "C": "CN",
+            "ST": "beijing",
+            "L": "beijing",
+            "O": "qytang",
+            "OU": "qytangk8s"
+      }
+  ]
+}
+EOF
+
+cd /opt/certs
+
+cfssl gencert -ca=ca.pem -ca-key=ca-key.pem \
+  -config=ca-config.json -profile=peer \
+  proxy-client-csr.json |cfssl-json -bare proxy-client
+
+```
+
+### 查看metrics-server证书 (dnsca)[由于API server没有安装网络,无法和metric server通讯所以无需安装]
+[root@localhost certs]# ll
+-rw-r--r-- 1 root root 1009 Oct 10 19:57 proxy-client.csr
+-rw-r--r-- 1 root root  263 Oct 10 19:57 proxy-client-csr.json
+-rw------- 1 root root 1675 Oct 10 19:57 proxy-client-key.pem
+-rw-r--r-- 1 root root 1720 Oct 10 19:57 proxy-client.pem
+
+
 ### 产生用于--service-account-key-file的公钥 (dnsca)
 ```shell script
 # 产生秘钥对
@@ -132,7 +170,7 @@ openssl rsa -in rsapair.pem -out private.pem -outform PEM
 
 ```
 
-### 查看产生的秘钥
+### 查看产生的秘钥(dnsca)
 [root@dnsca certs]# ll
 -rw------- 1 root root 1679 Oct  9 08:38 private.pem
 -rw-r--r-- 1 root root  451 Oct  9 08:38 public.pem
@@ -151,6 +189,10 @@ sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/etcd-client-key.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/etcd-client.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/public.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/private.pem  .
+
+# [由于API server没有安装网络,无法和metric server通讯所以无需安装]
+# sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/proxy-client.pem .
+# sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/proxy-client-key.pem .
 
 ```
 
@@ -372,7 +414,7 @@ https://kubernetes.io/zh/docs/reference/access-authn-authz/authentication/
 所引用的文件必须包含一个或者多个证书机构，用来验证向 API 服务器提供的客户端证书。 
 如果提供了客户端证书并且证书被验证通过，则 subject 中的公共名称（Common Name）就被 作为请求的用户名。
 
-### 配置apiserver启动脚本
+### 配置apiserver启动脚本 (Master01, Master02 and Master03)
 ```shell
 cat >/opt/kubernetes/server/bin/kube-apiserver.sh <<'EOF'
 #!/bin/bash
@@ -412,19 +454,31 @@ EOF
 
 ```
 
-### 授权可执行权限
+###[由于API server没有安装网络,无法和metric server通讯所以取消如下选项]
+```shell
+  --proxy-client-cert-file=/opt/kubernetes/server/cert/proxy-client.pem
+  --proxy-client-key-file=/opt/kubernetes/server/cert/proxy-client-key.pem
+  --requestheader-allowed-names=aggregator
+  --requestheader-extra-headers-prefix=X-Remote-Extra-
+  --requestheader-group-headers=X-Remote-Group
+  --requestheader-username-headers=X-Remote-User
+  --enable-aggregator-routing=true
+```
+
+
+### 授权可执行权限 (Master01, Master02 and Master03)
 ```shell
 chmod +x /opt/kubernetes/server/bin/kube-apiserver.sh
 
 ```
 
-### 创建目录
+### 创建目录 (Master01, Master02 and Master03)
 ```shell
 mkdir -p /data/logs/kubernetes/kube-apiserver
 
 ```
 
-### 创建supervisord的kube-apiserver.ini文件
+### 创建supervisord的kube-apiserver.ini文件 (Master01, Master02 and Master03)
 ```shell
 cat >/etc/supervisord.d/kube-apiserver.ini <<EOF
 [program:kube-apiserver]      ; 显示的程序名,类似my.cnf,可以有多个
@@ -456,13 +510,13 @@ supervisorctl update
 supervisorctl status
 ```
 
-### 查看状态
+### 查看状态 (Master01, Master02 and Master03)
 [root@master03 cert]# supervisorctl status
 
 etcd-server                      RUNNING   pid 1443, uptime 0:10:24
 kube-apiserver                   RUNNING   pid 1750, uptime 0:00:38
 
-### 查看开放端口
+### 查看开放端口 (Master01, Master02 and Master03)
 [root@master01 cert]# netstat -tulnp|grep kube-api
 #### https 6443 提供kubelet 连接
 tcp6       0      0 :::6443                 :::*                    LISTEN      2027/./kube-apiserv```

@@ -1,8 +1,23 @@
+### 安装metric-server[由于API server没有安装网络,无法和metric server通讯所以无需安装]
+https://github.com/kubernetes-sigs/metrics-server
+# 官方资源配置文件
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.5.1/components.yaml
+
+```shell
+kubectl apply -f http://mgmtcentos.qytanghost.com/dashboard_v2/metrics-server.yaml
+
+```
+
 ### 下载并推送镜像到私有仓库 (任何一个节点，但是需要docker login harbor.qytanghost.com)
 ```shell script
 docker pull kubernetesui/dashboard:v2.3.1
 docker tag kubernetesui/dashboard:v2.3.1 harbor.qytanghost.com/public/dashboard:v2.3.1
 docker push harbor.qytanghost.com/public/dashboard:v2.3.1
+
+# 由于没有安装metrics-server所以metrics-scraper就没有意义了
+#docker pull kubernetesui/metrics-scraper:v1.0.6
+#docker tag kubernetesui/metrics-scraper:v1.0.6 harbor.qytanghost.com/public/metrics-scraper:v1.0.6
+#docker push harbor.qytanghost.com/public/metrics-scraper:v1.0.6
 
 ```
 
@@ -12,33 +27,37 @@ https://raw.githubusercontent.com/kubernetes/dashboard/v2.3.1/aio/deploy/recomme
 ### 应用资源配置清单 (任何一个Master)
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/dashboard_v2/recommended.yaml
+kubectl apply -f http://mgmtcentos.qytanghost.com/dashboard_v2/ingress.yaml
+
 ```
 
 ### 查看deployment和pod状态 (任何一个Master)
 [root@master01 ~]# kubectl get deploy -n kubernetes-dashboard
-NAME                   READY   UP-TO-DATE   AVAILABLE   AGE
-kubernetes-dashboard   1/1     1            1           33m
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+dashboard-metrics-scraper   1/1     1            1           2m50s
+kubernetes-dashboard        1/1     1            1           2m51s
 
 [root@master01 ~]# kubectl get pod -n kubernetes-dashboard
-NAME                                    READY   STATUS    RESTARTS   AGE
-kubernetes-dashboard-7774587476-2ljmr   1/1     Running   0          5m7s
+NAME                                         READY   STATUS    RESTARTS   AGE
+dashboard-metrics-scraper-79c5968bdc-8xhxc   1/1     Running   0          3m26s
+kubernetes-dashboard-658485d5c7-47d68        1/1     Running   0          3m27s
 
 ### 获取Dashboard Admin Token (任何一个Master)
 [root@master01 ~]# kubectl get secret -n kubernetes-dashboard
 NAME                               TYPE                                  DATA   AGE
-dashboard-admin-token-sb5hs        kubernetes.io/service-account-token   3      34m
-default-token-rfdrp                kubernetes.io/service-account-token   3      34m
-kubernetes-dashboard-certs         Opaque                                0      34m
-kubernetes-dashboard-csrf          Opaque                                1      34m
-kubernetes-dashboard-key-holder    Opaque                                2      34m
-kubernetes-dashboard-token-wr4q4   kubernetes.io/service-account-token   3      34m
+dashboard-admin-token-f8txk        kubernetes.io/service-account-token   3      18s
+default-token-tq8zt                kubernetes.io/service-account-token   3      12m
+kubernetes-dashboard-certs         Opaque                                0      12m
+kubernetes-dashboard-csrf          Opaque                                1      12m
+kubernetes-dashboard-key-holder    Opaque                                2      12m
+kubernetes-dashboard-token-9djr7   kubernetes.io/service-account-token   3      12m
 
-[root@master01 ~]# kubectl describe secret dashboard-admin-token-sb5hs -n kubernetes-dashboard
-Name:         dashboard-admin-token-sb5hs
+[root@master01 ~]# kubectl describe secret dashboard-admin-token-f8txk -n kubernetes-dashboard
+Name:         dashboard-admin-token-f8txk
 Namespace:    kubernetes-dashboard
 Labels:       <none>
 Annotations:  kubernetes.io/service-account.name: dashboard-admin
-              kubernetes.io/service-account.uid: 134df2b1-c54f-4737-9c5d-19bf353b6110
+              kubernetes.io/service-account.uid: 60e6b3eb-be49-4833-a3ec-9c236beb3a33
 
 Type:  kubernetes.io/service-account-token
 
@@ -46,7 +65,7 @@ Data
 ====
 ca.crt:     2000 bytes
 namespace:  20 bytes
-token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IksyM0tpU1F1ZUZIMUQ2NU8wbzRGSEgxZk5xTzh6b2ZPQTJYNzhSNkh6SVUifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkYXNoYm9hcmQtYWRtaW4tdG9rZW4tc2I1aHMiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGFzaGJvYXJkLWFkbWluIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiMTM0ZGYyYjEtYzU0Zi00NzM3LTljNWQtMTliZjM1M2I2MTEwIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmVybmV0ZXMtZGFzaGJvYXJkOmRhc2hib2FyZC1hZG1pbiJ9.fObEXVsNDCQlEyCt98Zv10mPDY_N64slTJgS6Fwn5IxZxgjY-Dp0PMB4qXxMfFKf5MbIM648_yWGQ0S17QFPRUx6Wf9HF2euaAp-STYaZvj0sAvdnZcjNpgcLsDzDKd3V0CY9lGUNo9iCZBc82EhD-lFw0QyUX7_v-4AHSeLbPhxH_IckmECqP-j1r4fQTEiR2DPspdRNPeUKXEs-cR0lCURZ6nSrgXIEtH5gUZJ29Ygi3aIZVuyPC7xuwUT5D-AH-x087n9lGorhL_sAoip-78AanU1aS_c3vwtNrNPEWRtvgZ2NXnIv7wGCmrvEXlcwOIH4bwk1gELisjDE6_TDA
+token:      eyJhbGciOiJSUzI1NiIsImtpZCI6IksyM0tpU1F1ZUZIMUQ2NU8wbzRGSEgxZk5xTzh6b2ZPQTJYNzhSNkh6SVUifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJkYXNoYm9hcmQtYWRtaW4tdG9rZW4tZjh0eGsiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGFzaGJvYXJkLWFkbWluIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiNjBlNmIzZWItYmU0OS00ODMzLWEzZWMtOWMyMzZiZWIzYTMzIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmVybmV0ZXMtZGFzaGJvYXJkOmRhc2hib2FyZC1hZG1pbiJ9.Dz9WEtUN0Zj5iapz7cK9VZCj60QSy5wFltyrpgXsFfer3ljj0U7Lv-q3FGE6-D8UCjlTfX5ER9eenGEdt_5ftH-mZIZfvbCxoFfvRQI6cDxeCDHeCHASJRB66l2NyX2w89Av-63-QOf5S46Alhmwq6odfVFrbdvIFrceUWBmvHNwpOsyxNSPM-_EUYppkvnMxADfyeMjxBzNlPYuj0ZEr7HBikYM5trH3mHJL0GfPLNipVwc1ZlgPrxilgSKFyXsJtssXY9RLS3vpHxqPpiGEm5mA_9U8my97hk3TSAegHfena-KsGLUudPO-7lYwdFsUXHIn89zD85JDI_bLkzXPw
 
 ----------------------------------注意此处切换设备--------------------------------------
 
@@ -69,6 +88,7 @@ traefik                      A   10.1.1.10
 qyt-lb-ds                    A   10.1.1.10
 qyt-lb-dp                    A   10.1.1.10
 k8sdashboard                 A   10.1.1.10
+metricsserver                A   10.1.1.10
 EOF
 
 systemctl restart named
