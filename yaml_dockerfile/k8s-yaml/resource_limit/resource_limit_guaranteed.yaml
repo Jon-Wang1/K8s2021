@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resource-limit-guaranteed
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resource-limit-guaranteed
+  template:
+    metadata:
+      labels:
+        app: resource-limit-guaranteed
+    spec:
+      containers:
+      - name: resource-limit-guaranteed
+        image: harbor.qytanghost.com/public/nginx_curl
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 4
+            memory: 2Gi
+          limits:
+            cpu: 4
+            memory: 2Gi

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resource-limit-burstable
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resource-limit-burstable
+  template:
+    metadata:
+      labels:
+        app: resource-limit-burstable
+    spec:
+      containers:
+      - name: resource-limit-burstable
+        image: harbor.qytanghost.com/public/nginx_curl
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 1024Mi
+          limits:
+            cpu: 4
+            memory: 2Gi

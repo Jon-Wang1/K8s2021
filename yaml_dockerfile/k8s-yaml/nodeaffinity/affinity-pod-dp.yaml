@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: affinity-pod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: affinity-pod
+      qytaffinity: qytang
+  template:
+    metadata:
+      labels:
+        app: affinity-pod
+        qytaffinity: qytang
+    spec:
+      containers:
+      - name: affinity-pod
+        image: harbor.qytanghost.com/public/nginx_curl
+        ports:
+        - containerPort: 80
+#      nodeSelector:
+#        kubernetes.io/hostname: node03.qytanghost.com
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:  # node需要匹配的标签
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - node03.qytanghost.com
