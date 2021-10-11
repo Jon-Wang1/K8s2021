@@ -1,4 +1,4 @@
-### 确认dnsca.qytanghost.com的ssh秘钥(mgmtcentos)
+### 确认dnsca.qytanghost.com的ssh秘钥(mgmtcentos)[应该之前就处理过]
 [root@mgmtcentos certs]# ssh root@dnsca.qytanghost.com
 The authenticity of host 'dnsca.qytanghost.com (10.1.1.219)' can't be established.
 ECDSA key fingerprint is SHA256:jWlSzcu5QdgKgh19Haz/pXf4AfIwbt9cfzDERxuzwCs.
@@ -10,7 +10,7 @@ Last login: Fri Oct  8 13:01:50 2021 from 10.1.1.50
 logout
 
 
-### 下载根证书(mgmtcentos)
+### 下载根证书(mgmtcentos)[应该之前就处理过]
 ```shell
 yum install -y epel-release
 yum install -y sshpass
@@ -24,7 +24,7 @@ cp qytanghost.com.crt /etc/pki/ca-trust/source/anchors/qytanghost.com.crt
 update-ca-trust
 
 ```
-# mgmtcentos docker login(mgmtcentos)
+# mgmtcentos docker login(mgmtcentos)[应该之前就处理过]
 # 如果出现证书问题，建议重启尝试
 [root@mgmtcentos ~]# docker login harbor.qytanghost.com
 Username: admin
@@ -52,6 +52,7 @@ docker push harbor.qytanghost.com/public/qyt_lb
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/qyt-lb/qyt-lb-dp.yaml
 kubectl apply -f http://mgmtcentos.qytanghost.com/qyt-lb/qyt-lb-ds.yaml
+
 ```
 
 ### 查看状况 (任何一个Master)

@@ -1,21 +1,18 @@
 ### 前期准备controller manager (不需要配置, 只是回顾)
-```shell script
 kube-controller-manager启动参数
   --allocate-node-cidrs=true \
   --cluster-cidr 172.16.0.0/16 \
-```
+
 
 ### 前期的准备kubelet (不需要配置, 只是回顾)
-```shell script
 kubelet 启动参数
   --network-plugin=cni : 网络插件使用cni
-```
+
 
 ----------------------------------注意此处切换设备--------------------------------------
 
 ### 下载并上传镜像 (任何一个节点，但是需要docker login harbor.qytanghost.com)
 ```shell script
-# calico_only
 docker pull quay.io/tigera/operator:v1.20.4
 docker pull calico/ctl:v3.20.2
 docker tag quay.io/tigera/operator:v1.20.4 harbor.qytanghost.com/public/calico_operator:v1.20.4
@@ -53,7 +50,7 @@ nginx -s reload
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-### mgmtwin7上传整个项目到mgmtcentos
+### mgmtwin7上传整个项目到mgmtcentos（可能要新建“/K8S2021”这个目录）
 
 ### mgmtwin7测试是否可以打开http://mgmtcentos.qytanghost.com/
 

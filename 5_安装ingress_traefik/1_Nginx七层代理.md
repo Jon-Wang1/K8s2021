@@ -39,6 +39,7 @@ cfssl gencert \
 ```shell
 yum install -y epel-release
 yum install -y sshpass
+
 ```
 
 ### 确认dnsca.qytanghost.com的秘钥 (Nginx01, Nginx02)

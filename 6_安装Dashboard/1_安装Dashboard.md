@@ -1,6 +1,6 @@
 ### 安装metric-server[由于API server没有安装网络,无法和metric server通讯所以无需安装]
 https://github.com/kubernetes-sigs/metrics-server
-# 官方资源配置文件
+### 官方资源配置文件[由于API server没有安装网络,无法和metric server通讯所以无需安装]
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.5.1/components.yaml
 
 ```shell
@@ -14,12 +14,14 @@ docker pull kubernetesui/dashboard:v2.3.1
 docker tag kubernetesui/dashboard:v2.3.1 harbor.qytanghost.com/public/dashboard:v2.3.1
 docker push harbor.qytanghost.com/public/dashboard:v2.3.1
 
+```
+
 # 由于没有安装metrics-server所以metrics-scraper就没有意义了
 #docker pull kubernetesui/metrics-scraper:v1.0.6
 #docker tag kubernetesui/metrics-scraper:v1.0.6 harbor.qytanghost.com/public/metrics-scraper:v1.0.6
 #docker push harbor.qytanghost.com/public/metrics-scraper:v1.0.6
 
-```
+
 
 ### 官方资源配置清单
 https://raw.githubusercontent.com/kubernetes/dashboard/v2.3.1/aio/deploy/recommended.yaml
