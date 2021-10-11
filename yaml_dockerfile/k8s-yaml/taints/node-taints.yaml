@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Node
+metadata:
+  name: node01.qytanghost.com
+spec:
+  taints:
+    - key: disk
+      value: ssd
+      effect: NoSchedule
+#      effect: NoExecute

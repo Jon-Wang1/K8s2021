@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: no-tolerations
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: no-tolerations
+  template:
+    metadata:
+      labels:
+        app: no-tolerations
+    spec:
+      containers:
+      - name: no-tolerations
+        image: harbor.qytanghost.com/public/nginx_curl # 容器的镜像
+        ports:
+        - containerPort: 80

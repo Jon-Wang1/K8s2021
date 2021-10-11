@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tolerations
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tolerations
+  template:
+    metadata:
+      labels:
+        app: tolerations
+    spec:
+      containers:
+      - name: tolerations
+        image: harbor.qytanghost.com/public/nginx_curl # 容器的镜像
+        ports:
+        - containerPort: 80
+      tolerations:
+      - key: disk
+        operator: Equal
+        value: ssd
+        effect: NoSchedule
+#        effect: NoExecute

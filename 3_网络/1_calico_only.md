@@ -58,8 +58,8 @@ nginx -s reload
 ### 应用资源配置清单,安装calico(任何一个Master)
 ### https://docs.projectcalico.org/getting-started/kubernetes/quickstart
 ```shell script
-kubectl create -f http://mgmtcentos.qytanghost.com/calico/tigera-operator.yaml
-kubectl create -f http://mgmtcentos.qytanghost.com/calico/custom-resources.yaml
+kubectl apply -f http://mgmtcentos.qytanghost.com/calico/tigera-operator.yaml
+kubectl apply -f http://mgmtcentos.qytanghost.com/calico/custom-resources.yaml
 
 ```
 

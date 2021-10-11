@@ -5388,6 +5388,10 @@ spec:
           operator: Exists
         - effect: NoSchedule
           operator: Exists
+        - key: disk
+          operator: Equal
+          value: ssd
+          effect: NoSchedule
       serviceAccountName: tigera-operator
       hostNetwork: true
       # This must be set when hostNetwork is true or else the cluster services won't resolve
