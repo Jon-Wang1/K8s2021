@@ -60,6 +60,7 @@ mgmtcentos                  A   10.1.1.60
 EOF
 
 systemctl restart named
+
 ```
 
 ----------------------------------注意此处切换设备--------------------------------------
@@ -73,7 +74,7 @@ sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/admin.pem .
 
 ```
 
-### 配置集群参数 (Master01, Master02, Master03)
+### 创建kubeconfig文件，配置集群参数 (Master01, Master02, Master03)
 ```shell
 ln -s /opt/kubernetes/server/bin/kubectl /usr/bin/kubectl
 
@@ -88,7 +89,7 @@ kubectl config set-cluster kubernetes \
 
 ```
 
-###设置客户端认证参数 (Master01, Master02, Master03)
+###创建kubeconfig文件，设置客户端认证参数 (Master01, Master02, Master03)
 ```shell
 kubectl config set-credentials admin \
   --client-certificate=/opt/kubernetes/server/cert/admin.pem \
@@ -97,7 +98,7 @@ kubectl config set-credentials admin \
   --kubeconfig=kubectl.kubeconfig
 
 ```
-###设置上下文参数 (Master01, Master02, Master03)
+###创建kubeconfig文件，设置上下文参数 (Master01, Master02, Master03)
 ```shell
 kubectl config set-context kubernetes \
   --cluster=kubernetes \
@@ -106,14 +107,14 @@ kubectl config set-context kubernetes \
 
 ```
 
-###设置默认上下文 (Master01, Master02, Master03)
+###创建kubeconfig文件，设置默认上下文 (Master01, Master02, Master03)
 ```shell
-
 kubectl config use-context kubernetes --kubeconfig=kubectl.kubeconfig
 cp kubectl.kubeconfig ~/.kube/config
+
 ```
 
-### 测试kubectl
+### 测试kubectl，查看组件状态，现在至少可以看到三个etcd是好的
 [root@master01 .kube]# kubectl get cs
 Warning: v1 ComponentStatus is deprecated in v1.19+
 NAME                 STATUS      MESSAGE                                                                                       ERROR

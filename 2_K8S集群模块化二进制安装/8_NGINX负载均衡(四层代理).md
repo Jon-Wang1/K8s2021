@@ -52,6 +52,8 @@ chmod +x /etc/keepalived/check_port.sh
 
 ```
 
+----------------------------------注意此处切换设备--------------------------------------
+
 ### KEEPALIVE主 （nginx01)
 ```shell script
 cat >/etc/keepalived/keepalived.conf <<'EOF'
@@ -87,6 +89,8 @@ vrrp_instance VI_1 {
 EOF
 
 ```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ### KEEPALIVE从 （nginx02)
 ```shell script

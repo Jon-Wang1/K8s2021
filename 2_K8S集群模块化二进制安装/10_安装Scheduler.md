@@ -1,5 +1,6 @@
 ### 申请并颁发scheduler证书 (dnsca)
 ```shell
+cd /opt/certs
 cat >/opt/certs/scheduler-csr.json <<EOF
 {
     "CN": "system:kube-scheduler",

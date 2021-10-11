@@ -71,6 +71,7 @@ cfssl gencert -ca=ca.pem \
 
 ### 申请并颁发apiserver证书 (dnsca)
 ```shell
+cd /opt/certs/
 cat >/opt/certs/kubernetes-csr.json <<EOF
 {
     "CN": "kubernetes",
@@ -508,15 +509,16 @@ EOF
 ```shell
 supervisorctl update
 supervisorctl status
+
 ```
 
 ### 查看状态 (Master01, Master02 and Master03)
-[root@master03 cert]# supervisorctl status
+[root@master0x cert]# supervisorctl status
 
 etcd-server                      RUNNING   pid 1443, uptime 0:10:24
 kube-apiserver                   RUNNING   pid 1750, uptime 0:00:38
 
 ### 查看开放端口 (Master01, Master02 and Master03)
-[root@master01 cert]# netstat -tulnp|grep kube-api
+[root@master0x cert]# netstat -tulnp | grep kube-api
 #### https 6443 提供kubelet 连接
 tcp6       0      0 :::6443                 :::*                    LISTEN      2027/./kube-apiserv```

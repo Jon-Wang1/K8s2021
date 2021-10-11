@@ -33,21 +33,23 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem \
   -config=ca-config.json -profile=peer \
   etcd-peer-csr.json |cfssl-json -bare etcd-peer
 
+```
+
+# 查看签发的证书(dnsca)
 [root@localhost certs]# ll
-~~~忽略其它~~~
 -rw-r--r-- 1 root root 1094 9月   9 20:21 etcd-peer.csr
 -rw-r--r-- 1 root root  419 9月   9 20:19 etcd-peer-csr.json
 -rw------- 1 root root 1675 9月   9 20:21 etcd-peer-key.pem
 -rw-r--r-- 1 root root 1472 9月   9 20:21 etcd-peer.pem
-```
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-#二进制安装etcd(Master01, Master02, Master03)
+##二进制安装etcd(Master01, Master02, Master03)
 
 ### 创建用户(Master01, Master02, Master03)
 ```shell script
 useradd -s /sbin/nologin -M etcd
+
 ```
 
 ### etcd标签
@@ -64,6 +66,7 @@ mv etcd-v3.4.17-linux-amd64/ etcd-v3.4.17
 ln -s /opt/etcd-v3.4.17/ /opt/etcd
 
 mkdir -p /opt/etcd/certs /data/etcd /data/logs/etcd-server /data/etcd/etcd-server
+
 ```
 
 ### 下载证书文件(Master01, Master02, Master03)
@@ -73,6 +76,7 @@ cd /opt/etcd/certs/
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/ca.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/etcd-peer-key.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/etcd-peer.pem .
+
 ```
 
 ### 查看证书(Master01, Master02, Master03)
@@ -90,6 +94,7 @@ total 12
 chown -R etcd.etcd /data/etcd/
 chown -R etcd.etcd /data/logs/etcd-server/
 chown -R etcd.etcd /opt/etcd-v3.4.17/
+
 ```
 
 ### etcd参数介绍
@@ -231,37 +236,40 @@ EOF
 
 ```
 
-### 更新并查看状态(master01, master02, master03)
+### 更新配置(master01, master02, master03)
 ```shell
 supervisorctl update
 
-supervisorctl status
-etcd-server                      RUNNING   pid 2850, uptime 0:19:58
 ```
+
+### 查看状态(master01, master02, master03)
+[root@master0x certs]# supervisorctl status
+etcd-server                      RUNNING   pid 2750, uptime 0:00:32
 
 ### 出现问题可以尝试查看日志(master01, master02, master03)
 ```shell
 cat /data/logs/etcd-server/etcd.stdout.log
+
 ```
 
 ### 出现问题可以尝试重新启动服务(master01, master02, master03)
 ```shell
 supervisorctl restart etcd-server
+
 ```
 
 ### 查看开放端口(master01, master02, master03)
-```shell
-netstat -lntup|grep etcd
-# 2379 为客户提供服务
+
+[root@master0x certs]# netstat -tulnp | grep etcd
+#### 2379 为客户提供服务
 tcp        0      0 10.1.1.101:2379         0.0.0.0:*               LISTEN      2164/./etcd         
 tcp        0      0 127.0.0.1:2379          0.0.0.0:*               LISTEN      2164/./etcd    
-# 2380 ETCD内部通信     
+#### 2380 ETCD内部通信     
 tcp        0      0 10.1.1.101:2380         0.0.0.0:*               LISTEN      2164/./etcd  
-```
+
  
-# 查看成员状态(master01, master02, master03)
-```shell
-/opt/etcd/etcdctl member list -w table
+### 查看成员状态(master01, master02, master03)
+[root@master0x certs]# /opt/etcd/etcdctl member list -w table
 +------------------+---------+-------------------------+-------------------------+-----------------------------------------------+------------+
 |        ID        | STATUS  |          NAME           |       PEER ADDRS        |                 CLIENT ADDRS                  | IS LEARNER |
 +------------------+---------+-------------------------+-------------------------+-----------------------------------------------+------------+
@@ -270,15 +278,13 @@ tcp        0      0 10.1.1.101:2380         0.0.0.0:*               LISTEN      
 | b80844a3f01be1f2 | started | master03.qytanghost.com | https://10.1.1.103:2380 | http://127.0.0.1:2379,https://10.1.1.103:2379 |      false |
 +------------------+---------+-------------------------+-------------------------+-----------------------------------------------+------------+
 
-```
 
-# 三个设备都执行以下命令，找到leader(master01, master02, master03)
-```shell
-/opt/etcd/etcdctl endpoint status -w table
+### 三个设备都执行以下命令，找到leader(master01, master02, master03)
+[root@master01 certs]# /opt/etcd/etcdctl endpoint status -w table
 +----------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
 |    ENDPOINT    |        ID        | VERSION | DB SIZE | IS LEADER | IS LEARNER | RAFT TERM | RAFT INDEX | RAFT APPLIED INDEX | ERRORS |
 +----------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
 | 127.0.0.1:2379 | 6561a639310282a3 |  3.4.17 |   20 kB |      true |      false |        11 |         13 |                 13 |        |
 +----------------+------------------+---------+---------+-----------+------------+-----------+------------+--------------------+--------+
-```
+
 
