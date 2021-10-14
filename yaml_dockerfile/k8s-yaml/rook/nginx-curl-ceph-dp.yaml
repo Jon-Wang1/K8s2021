@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-curl-ceph-dp # deployment的名字
+spec:
+  replicas: 1 # deployment必须指定副本数量
+  selector:
+    matchLabels:
+      app: nginx-curl-ceph-dp # 选择器匹配的标签
+  template:
+    metadata:
+      labels:
+        app: nginx-curl-ceph-dp # 标签
+    spec:
+      containers:
+      - name: nginx-curl-ceph-dp # 容器的名字, 一个pod内可以有多个容器
+        image: harbor.qytanghost.com/public/nginx_curl # 容器的镜像
+        volumeMounts:
+          - name: mypvc
+            mountPath: /usr/share/nginx/html
+        ports:
+        - containerPort: 80 # 只是一个信息, 类似于Dockerfile的EXPOSE
+      volumes:
+        - name: mypvc
+          persistentVolumeClaim:
+            claimName: qytang-pvc
+            readOnly: false
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-curl-ceph-dp-service # service的名字
+spec:
+  selector:
+    app: nginx-curl-ceph-dp # service选择的标签
+  ports:
+  - name: http
+    port: 80 # 对外暴露的端口
+    protocol: TCP
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nginx-ceph
+spec:
+  entryPoints:
+  - web
+  routes:
+  - match: Host(`nginx-ceph.qytangk8s.com`)
+    kind: Rule
+    services:
+    - name: nginx-curl-ceph-dp-service
+      port: 80
