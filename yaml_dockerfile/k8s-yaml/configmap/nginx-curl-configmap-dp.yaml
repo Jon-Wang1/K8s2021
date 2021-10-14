@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-curl-configmap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-curl-configmap
+  template:
+    metadata:
+      labels:
+        app: nginx-curl-configmap
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: node01.qytanghost.com
+      containers:
+      - name: nginx-curl-configmap
+        image: harbor.qytanghost.com/public/nginx_curl
+        volumeMounts:
+          - name: qytang-configmap-nginx-conf
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+          - name: qytang-configmap-nginx-html
+            mountPath: /qytang_nginx/html
+        ports:
+        - name: expose-dp-port
+          containerPort: 80
+          hostPort: 6888
+      volumes:
+        - name: qytang-configmap-nginx-conf
+          configMap:
+            name: qytang-configmap-nginx-conf
+        - name: qytang-configmap-nginx-html
+          configMap:
+            name: qytang-configmap-nginx-html

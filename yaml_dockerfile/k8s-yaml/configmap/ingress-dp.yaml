@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nginx-curl-configmap-ingress
+spec:
+  entryPoints:
+  - web
+  routes:
+  - match: Host(`nginx-configmap.qytangk8s.com`)
+    kind: Rule
+    services:
+    - name: nginx-curl-configmap-service
+      port: 80
