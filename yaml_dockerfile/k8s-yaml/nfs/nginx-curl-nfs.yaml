@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-curl-nfs # deployment的名字
+spec:
+  replicas: 1 # deployment必须指定副本数量
+  selector:
+    matchLabels:
+      app: nginx-curl-nfs # 选择器匹配的标签
+  template:
+    metadata:
+      labels:
+        app: nginx-curl-nfs # 标签
+    spec:
+      containers:
+      - name: nginx-curl-nfs # 容器的名字, 一个pod内可以有多个容器
+        image: harbor.qytanghost.com/public/nginx_curl # 容器的镜像
+        volumeMounts:
+          - name: nfsv
+            mountPath: /nfsv
+        ports:
+        - containerPort: 80 # 只是一个信息, 类似于Dockerfile的EXPOSE
+      volumes:
+      - name: nfsv
+        nfs:
+          server: mgmtcentos.qytanghost.com
+          path: /K8S2021/nfs-volume/nfs-test
