@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: strategy-rollingupdate
+spec:
+  replicas: 10
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 3
+      maxSurge: 2
+  selector:
+    matchLabels:
+      app: strategy-rollingupdate
+  template:
+    metadata:
+      labels:
+        app: strategy-rollingupdate
+    spec:
+      containers:
+      - name: strategy-rollingupdate
+        image: harbor.qytanghost.com/public/probes:cmd
+#        image: harbor.qytanghost.com/public/probes:entrypoint
+#        image: harbor.qytanghost.com/public/probes:env
+        ports:
+        - containerPort: 80
