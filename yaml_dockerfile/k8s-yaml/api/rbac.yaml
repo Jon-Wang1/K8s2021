@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    k8s-app: api-sa
+  name: api-sa
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: api-author
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs:
+    - list
+    - get
+    - watch
+    - create
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs:
+    - get
+- apiGroups: [""]
+  resources: ["services"]
+  verbs:
+    - create
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs:
+    - create
+    - patch
+    - delete
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: api-rbac-binding
+subjects:
+  - kind: ServiceAccount
+    name: api-sa
+    namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: api-author

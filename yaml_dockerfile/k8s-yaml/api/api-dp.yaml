@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-dp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-dp
+  template:
+    metadata:
+      labels:
+        app: api-dp
+    spec:
+      serviceAccountName: api-sa
+      containers:
+      - name: api-dp
+        image: harbor.qytanghost.com/public/api-rbac
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
