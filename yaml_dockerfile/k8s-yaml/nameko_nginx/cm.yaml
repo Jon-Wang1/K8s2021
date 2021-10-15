@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nameko-nginx-cm
+  namespace: devops
+data:
+  nameko-app.qytangk8s.com.conf: |
+    server {
+            server_name nameko-app.qytangk8s.com;
+            listen 80;
+
+            location / {
+                        include uwsgi_params;
+                        uwsgi_pass nameko-app:8001;
+                        }
+            location /static/ {
+                autoindex on;
+                alias /static/;
+                    }
+            }

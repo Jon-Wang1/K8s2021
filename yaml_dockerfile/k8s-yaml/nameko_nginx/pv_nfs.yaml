@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nameko-nginx-static-pv
+spec:
+  # 指定 PV 的容量为1Gi
+  capacity:
+    storage: 10Gi
+  # 指定访问模式
+  accessModes:
+    # PV 能以 readwrite 模式 mount 到单个节点
+    - ReadWriteMany
+  # 指定 PV 的回收策略，即 PVC 资源释放后的事件，recycle (不建议，使用动态供给代替)删除 PVC 的所有文件
+  persistentVolumeReclaimPolicy: Retain
+  # 指定 PV 的 class 为 mynfs，相当于为 PV 分类，PVC 将指定 class 申请 PV
+  storageClassName: nameko-nginx-static-storage-class
+  # 指定 PV 为 nfs 服务器上对应的目录
+  nfs:
+    path: /K8S2021/nfs-volume/nameko_nginx/static/
+    server: mgmtcentos.qytanghost.com

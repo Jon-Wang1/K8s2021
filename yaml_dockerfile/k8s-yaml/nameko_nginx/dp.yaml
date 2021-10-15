@@ -1,0 +1,52 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nameko-nginx
+  namespace: devops
+  labels: 
+    name: nameko-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      name: nameko-nginx
+  template:
+    metadata:
+      labels: 
+        app: nameko-nginx
+        name: nameko-nginx
+    spec:
+      containers:
+      - name: nameko-nginx
+        image: harbor.qytanghost.com/public/nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: static-images
+            mountPath: /static
+          - name: configmap-volume
+            mountPath: /etc/nginx/conf.d  
+      volumes:
+        - name: configmap-volume
+          configMap:
+            name: nameko-nginx-cm
+        - name: static-images
+          persistentVolumeClaim:
+            claimName: nameko-nginx-static-pvc
+            readOnly: false
+      imagePullSecrets:
+      - name: harbor
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      securityContext: 
+        runAsUser: 0
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 7
+  progressDeadlineSeconds: 600

@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: nameko-nginx
+  namespace: devops
+spec:
+  entryPoints:
+  - web
+  routes:
+  - match: Host(`nameko-app.qytangk8s.com`)
+    kind: Rule
+    services:
+    - name: nameko-nginx
+      port: 80
