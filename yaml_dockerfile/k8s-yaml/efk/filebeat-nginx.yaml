@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nameko-nginx
+  namespace: devops
+  labels:
+    name: nameko-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: nameko-nginx
+  template:
+    metadata:
+      labels:
+        app: nameko-nginx
+        name: nameko-nginx
+      annotations:
+        blackbox_path: "/"
+        blackbox_url: "nameko-app.qytangk8s.com"
+        blackbox_port: "80"
+        blackbox_scheme: "ingressroute"
+        prometheus_io_scheme: "nameko-app"
+        prometheus_io_path: "/metrics"
+        prometheus_io_port: "80"
+    spec:
+      containers:
+      - name: nameko-nginx
+        image: harbor.qytanghost.com/efk/nginx-log
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        imagePullPolicy: Always
+        volumeMounts:
+          - name: static-images
+            mountPath: /static
+          - name: configmap-volume
+            mountPath: /etc/nginx/conf.d
+          - name: logdir
+            mountPath: /var/log/nginx
+      - name: filebeat
+        image: harbor.qytanghost.com/efk/qyt-filebeat:7.14.2
+        imagePullPolicy: Always
+        volumeMounts:
+        - mountPath: /logdir
+          name: logdir
+      volumes:
+        - name: configmap-volume
+          configMap:
+            name: nameko-nginx-cm
+        - name: static-images
+          persistentVolumeClaim:
+            claimName: nameko-nginx-static-pvc
+            readOnly: false
+        - emptyDir: {}
+          name: logdir
+      imagePullSecrets:
+      - name: harbor
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsUser: 0
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 7
+  progressDeadlineSeconds: 600

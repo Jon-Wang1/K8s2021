@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: efk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: harbor.qytanghost.com/efk/elasticsearch:7.14.2
+#        image: harbor.qytang.com/efk/elasticsearch:6.8.13
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "3Gi"
+          limits:
+            cpu: "4000m"
+            memory: "6Gi"
+        env:
+          - name: discovery.type
+            value: "single-node"
+          - name: node.name
+            value: "elasticsearch"
+          - name: cluster.name
+            value: "elasticsearch.qytanghost.com"
+          - name: bootstrap.memory_lock
+            value: 'true'
+          - name: "ES_JAVA_OPTS"
+            value: "-Xms2g -Xmx2g"
+          - name: network.host
+            value: '0.0.0.0'
+          - name: http.port
+            value: '9200'
+        ports:
+        - name: api
+          containerPort: 9200
+        - name: cluster
+          containerPort: 9300
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: elasticsearch-data
+      volumes:
+      - name: elasticsearch-data
+        persistentVolumeClaim:
+          claimName: elasticsearch-pvc
+          readOnly: false

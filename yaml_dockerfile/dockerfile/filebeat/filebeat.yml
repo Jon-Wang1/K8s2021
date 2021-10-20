@@ -1,0 +1,10 @@
+filebeat.config.modules:
+  enabled: true
+  path: /usr/share/filebeat/modules.d/*.yml
+output.elasticsearch:
+  hosts: ["http://elasticsearch.qytangk8s.com:80"]
+  index: "nameko-nginx-env-%{+yyyy.MM.dd}"
+setup.kibana.host: "http://kibana.qytangk8s.com:80"
+setup.template.name: "nameko-nginx"
+setup.template.pattern: "nameko-nginx-*"
+setup.ilm.enabled: false

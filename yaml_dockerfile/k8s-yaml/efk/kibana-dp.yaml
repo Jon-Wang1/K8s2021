@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: efk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: harbor.qytanghost.com/efk/kibana:7.14.2
+        resources:
+          requests:
+            cpu: "2000m"
+            memory: "3Gi"
+          limits:
+            cpu: "4000m"
+            memory: "6Gi"
+        env:
+          - name: server.name
+            value: "kibana"
+          - name: elasticsearch.hosts
+            value: "http://elasticsearch:9200"
+        ports:
+        - name: ui
+          containerPort: 5601
+        volumeMounts:
+        - mountPath: /usr/share/kibana/data
+          name: kibana-data
+      volumes:
+      - name: kibana-data
+        persistentVolumeClaim:
+          claimName: kibana-pvc
+          readOnly: false

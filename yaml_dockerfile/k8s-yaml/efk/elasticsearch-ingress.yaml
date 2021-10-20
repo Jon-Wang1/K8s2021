@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: elasticsearch
+  namespace: efk
+spec:
+  entryPoints:
+  - web
+  routes:
+  - match: Host(`elasticsearch.qytangk8s.com`)
+    kind: Rule
+    services:
+    - name: elasticsearch
+      port: 9200
