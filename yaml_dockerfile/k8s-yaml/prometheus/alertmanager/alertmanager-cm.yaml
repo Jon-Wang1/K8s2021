@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: monitoring
+data:
+  config.yml: |-
+    global:
+      # 在没有报警的情况下声明为已解决的时间
+      resolve_timeout: 5m
+
+     # The smarthost and SMTP sender used for mail notifications
+      smtp_smarthost: 'smtp.qq.com:465'
+      smtp_from: '3348326959@qq.com'
+      smtp_auth_username: '3348326959@qq.com'
+      smtp_auth_password: 'dmyymagcazklcjie'
+      smtp_require_tls: false
+
+    # The directory from which notification templates are read.
+    templates:
+      - '/etc/alertmanager/*.tmpl'
+
+    # The root route on which each incoming alert enters.
+    route:
+      # The labels by which incoming alerts are grouped together. For example,
+      # multiple alerts coming in for cluster=A and alertname=LatencyHigh would
+      # be batched into a single group.
+      #
+      # To aggregate by all possible labels use '...' as the sole label name.
+      # This effectively disables aggregation entirely, passing through all
+      # alerts as-is. This is unlikely to be what you want, unless you have
+      # a very low alert volume or your upstream notification system performs
+      # its own grouping. Example: group_by: [...]
+      group_by: ['alertname', 'cluster']
+
+      # When a new group of alerts is created by an incoming alert, wait at
+      # least 'group_wait' to send the initial notification.
+      # This way ensures that you get multiple alerts for the same group that start
+      # firing shortly after another are batched together on the first
+      # notification.
+      group_wait: 30s
+
+      # When the first notification was sent, wait 'group_interval' to send a batch
+      # of new alerts that started firing for that group.
+      group_interval: 5m
+
+      # If an alert has successfully been sent, wait 'repeat_interval' to
+      # resend them.
+      repeat_interval: 10m
+
+      # A default receiver: 如果一个报警没有被一个route匹配，则发送给默认的接收器
+      receiver: default
+      # 特殊路由
+      routes:
+        - match_re:
+            alertname: ^ProbeFailed$
+          receiver: gmail_admin
+
+    receivers:
+    - name: 'default'
+      email_configs:
+      - to: 'collinsctk@qytang.com'
+        send_resolved: true
+        html: '{{ template "email.to.html" . }}'
+        headers: { Subject: "乾颐堂默认Prometheus告警" }
+
+    - name: 'gmail_admin'
+      email_configs:
+      - to: 'collinsctk@gmail.com'
+        send_resolved: true
+        html: '{{ template "email.to.html" . }}'
+        headers: { Subject: "乾颐堂管理员Prometheus告警" }
+
+  email.tmpl: |
+    {{ define "email.to.html" }}
+    <img src="http://www.qytang.com/Public/home/images/logo.png" height="100" width="auto"/><br>
+    <h1 style="color: red"> 乾颐堂 {{ .CommonLabels.alertname }} Altermanager告警 </h1>
+    {{- if gt (len .Alerts.Firing) 0 -}}
+    {{ range .Alerts }}
+    告警程序: prometheus_alert <br>
+    告警级别: {{ .Labels.severity }} <br>
+    告警类型: {{ .Labels.alertname }} <br>
+    故障主机: {{ .Labels.instance }} <br>
+    告警主题: {{ .Annotations.summary }}  <br>
+    触发时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }} <br><br>
+    {{ end }}{{ end -}}
+
+    {{- if gt (len .Alerts.Resolved) 0 -}}
+    {{ range .Alerts }}
+    告警程序: prometheus_alert <br>
+    告警级别: {{ .Labels.severity }} <br>
+    告警类型: {{ .Labels.alertname }} <br>
+    故障主机: {{ .Labels.instance }} <br>
+    告警主题: {{ .Annotations.summary }} <br>
+    触发时间: {{ .StartsAt.Format "2006-01-02 15:04:05" }} <br>
+    恢复时间: {{ .EndsAt.Format "2006-01-02 15:04:05" }} <br><br>
+    {{ end }}{{ end -}}
+
+    {{- end }}

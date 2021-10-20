@@ -1,0 +1,14 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  entryPoints:
+  - web
+  routes:
+  - match: Host(`alertmanager.qytangk8s.com`)
+    kind: Rule
+    services:
+    - name: alertmanager
+      port: 80

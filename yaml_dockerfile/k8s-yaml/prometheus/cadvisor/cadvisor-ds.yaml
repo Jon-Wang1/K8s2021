@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app.kubernetes.io/name: cadvisor
+    app.kubernetes.io/version: v0.42.0
+  name: cadvisor
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cadvisor
+  template:
+    metadata:
+      name: cadvisor
+      labels:
+        app.kubernetes.io/name: cadvisor
+        app.kubernetes.io/version: v0.42.0
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: cadvisor
+        image: harbor.qytanghost.com/monitoring/cadvisor:v0.42.0
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 1
+            memory: 1Gi
+          requests:
+            cpu: 1
+            memory: 1Gi
+        volumeMounts:
+        - name: rootfs
+          mountPath: /rootfs
+          readOnly: true
+        - name: var-run
+          mountPath: /var/run
+        - name: sys
+          mountPath: /sys
+          readOnly: true
+        - name: docker
+          mountPath: /var/lib/docker
+          readOnly: true
+        - name: cgroup
+          mountPath: /sys/fs/cgroup
+          readOnly: true
+        ports:
+          - name: http
+            containerPort: 4194
+            protocol: TCP
+        readinessProbe:
+          tcpSocket:
+            port: 4194
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        args:
+          - --housekeeping_interval=10s
+          - --profiling
+          - --port=4194
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: rootfs
+        hostPath:
+          path: /
+      - name: var-run
+        hostPath:
+          path: /var/run
+      - name: sys
+        hostPath:
+          path: /sys
+      - name: docker
+        hostPath:
+          path: /data/docker
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup

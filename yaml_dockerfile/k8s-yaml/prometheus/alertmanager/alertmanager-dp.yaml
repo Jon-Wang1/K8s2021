@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alertmanager
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+    spec:
+      containers:
+      - name: alertmanager
+        image: harbor.qytanghost.com/monitoring/alertmanager:v0.23.0
+        args:
+          - "--config.file=/etc/alertmanager/config.yml"
+          - "--storage.path=/alertmanager"
+        ports:
+        - name: alertmanager
+          containerPort: 9093
+        volumeMounts:
+        - name: alertmanager-cm
+          mountPath: /etc/alertmanager
+      volumes:
+      - name: alertmanager-cm
+        configMap:
+          name: alertmanager-config
+      imagePullSecrets:
+      - name: harbor
