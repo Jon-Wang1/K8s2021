@@ -1,0 +1,46 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: rabbitmq
+  namespace: devops
+  labels:
+    name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: rabbitmq
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+        name: rabbitmq
+      annotations:
+        blackbox_port: "5672"
+        blackbox_scheme: "tcp"
+    spec:
+      containers:
+      - name: rabbitmq
+        image: harbor.qytanghost.com/public/rabbitmq
+        ports:
+        - containerPort: 5672
+          protocol: TCP
+        env:
+        - name: RABBITMQ_DEFAULT_USER
+          value: rabbitmq_admin
+        - name: RABBITMQ_DEFAULT_PASS
+          value: Cisc0123
+        imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsUser: 0
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 7
+  progressDeadlineSeconds: 600
