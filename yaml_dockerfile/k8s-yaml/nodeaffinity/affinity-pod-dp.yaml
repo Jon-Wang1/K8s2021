@@ -3,30 +3,27 @@ kind: Deployment
 metadata:
   name: affinity-pod
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: affinity-pod
-      qytaffinity: qytang
   template:
     metadata:
       labels:
         app: affinity-pod
-        qytaffinity: qytang
     spec:
       containers:
       - name: affinity-pod
         image: harbor.qytanghost.com/public/nginx_curl
         ports:
         - containerPort: 80
-#      nodeSelector:
-#        kubernetes.io/hostname: node03.qytanghost.com
       affinity:
-        nodeAffinity:
+        podAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:  # node需要匹配的标签
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - node03.qytanghost.com
+          - labelSelector:  # pod需要的标签
+              matchExpressions:
+              - key: qytaffinity
+                operator: In
+                values:
+                - qytang
+            topologyKey: rack  # Rack需要的标签

@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: anti-affinity
+  name: anti-affinity-pod
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: anti-affinity
+      app: anti-affinity-pod
   template:
     metadata:
       labels:
-        app: anti-affinity
+        app: anti-affinity-pod
     spec:
       containers:
-      - name: anti-affinity
+      - name: anti-affinity-pod
         image: harbor.qytanghost.com/public/nginx_curl
         ports:
         - containerPort: 80
