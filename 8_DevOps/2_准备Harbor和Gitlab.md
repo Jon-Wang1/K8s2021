@@ -1,25 +1,37 @@
-###Harbor创建私有项目devops(详细截图看PPT)
+###Harbor创建私有项目devops(详细截图看PPT) （Harbor图形界面）
 
-###Gitlab创建私有项目Nameko_DevOps(详细截图看PPT)
+----------------------------------注意此处切换设备--------------------------------------
 
-###复制项目Git地址(详细截图看PPT)
+###Gitlab创建私有项目Nameko_DevOps(详细截图看PPT) （Gitlab图形界面）
 
-###PyCharm定义Remote(详细截图看PPT)
+###复制项目Git地址(详细截图看PPT)（Gitlab图形界面）
 
-###PyCharm Push项目到Gitlab(详细截图看PPT)
+----------------------------------注意此处切换设备--------------------------------------
 
-###Gitlab查看两个分支(详细截图看PPT)
+###PyCharm定义Remote(详细截图看PPT) （mgmtwin7）
 
-### 安装Runner (gitlab)
+###PyCharm Push项目到Gitlab(详细截图看PPT) （mgmtwin7）
+
+----------------------------------注意此处切换设备--------------------------------------
+
+###Gitlab查看两个分支(详细截图看PPT) （Gitlab图形界面）
+
+----------------------------------注意此处切换设备--------------------------------------
+
+### 安装Runner (Gitlab)
 ```shell
 curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh" | sudo bash
 yum install -y gitlab-ci-multi-runner
 
 ```
 
-### 查看Runner注册URL与Token(详细截图看PPT)
+----------------------------------注意此处切换设备--------------------------------------
 
-### 注册Gitlab Runner (gitlab)
+### 查看Runner注册URL与Token(详细截图看PPT) (Gitlab图形界面)
+
+----------------------------------注意此处切换设备--------------------------------------
+
+### 注册Gitlab Runner (Gitlab)
 [root@gitlab deploy]# gitlab-ci-multi-runner register
 Runtime platform                                    arch=amd64 os=linux pid=733460 revision=e0218c92 version=14.3.2
 Running in system-mode.
@@ -37,21 +49,32 @@ Enter an executor: kubernetes, docker, docker-ssh, parallels, shell, virtualbox,
 shell
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 
-### 查看注册的Runner (详细截图看PPT)
+### 查看注册的Runner (详细截图看PPT) (Gitlab图形界面)
 
-### 添加Runner到sudouser  (详细截图看PPT)
+----------------------------------注意此处切换设备--------------------------------------
+
+### 添加Runner到sudouser  (详细截图看PPT) (Gitlab)
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ### 创建登录harbor的secret (任何一个Master)
 ```shell
 kubectl apply -f http://mgmtcentos.qytanghost.com/nameko_harbor_secret/harbor_secret.yaml
+
 ```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ###拷贝kubeconfig到Gitlab
 #### Gitlab创建目录 (Gitlab)
 [root@gitlab ~]# mkdir /etc/deploy
 
+----------------------------------注意此处切换设备--------------------------------------
+
 #### Mastor01 拷贝kubeconfig到gitlab (Master01)
 [root@master01 ~]# scp /root/.kube/config root@gitlab.qytanghost.com:/etc/deploy/config
+
+----------------------------------注意此处切换设备--------------------------------------
 
 #### 让gitlab-runner成为config文件的拥有者 (Gitlab)
 [root@gitlab ~]# chown gitlab-runner /etc/deploy/config
@@ -76,11 +99,27 @@ ln -s /opt/kubernetes-v1.20.11-linux-amd64/ /opt/kubernetes
 ln -s /opt/kubernetes/client/bin/kubectl /usr/bin/kubectl
 
 ```
+----------------------------------注意此处切换设备--------------------------------------
 
-### 设置Gitlab 环境变量 (详细截图看PPT)
+### 设置Gitlab 环境变量 (详细截图看PPT)（Gitlab图形界面）
 
-### push nameko_microservice分支,并且查看CICD pipeline
+### 启动 nameko_microservice分支的Pipeline,并且查看CICD pipeline （Gitlab图形界面）
 
-### push nameko_flask分支,并且查看CICD pipeline
+----------------------------------注意此处切换设备--------------------------------------
 
+### 查看nameko_microservice pod （任何一个Master）
+[root@master01 ~]# kubectl get pod -l "app=nameko-microservice" -n devops
+NAME                                   READY   STATUS    RESTARTS   AGE
+nameko-microservice-7486c445fb-mwpgz   1/1     Running   0          2m32s
+
+----------------------------------注意此处切换设备--------------------------------------
+
+### 启动 nameko_flask分支的Pipeline,并且查看CICD pipeline（Gitlab图形界面）
+
+----------------------------------注意此处切换设备--------------------------------------
+
+### 查看nameko_flask pod （任何一个Master）
+[root@master01 ~]# kubectl get pod -l "app=nameko-app" -n devops
+NAME                          READY   STATUS    RESTARTS   AGE
+nameko-app-75b56f5588-p69pq   1/1     Running   0          4m39s
 

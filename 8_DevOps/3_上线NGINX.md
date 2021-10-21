@@ -75,4 +75,12 @@ systemctl restart named
 
 ```
 
+----------------------------------注意此处切换设备--------------------------------------
+
 ### 测试访问 nameko-app.qytangk8s.com (mgmtwin7)
+https://nameko-app.qytangk8s.com
+
+### PyCharm修改分支nameko_microservice 的index.html，Push修改到Gitlab测试DevOps Pipeline （mgmt PyCharm）
+
+### 测试访问 nameko-app.qytangk8s.com 查看修改 (mgmtwin7)
+https://nameko-app.qytangk8s.com
