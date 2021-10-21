@@ -51,18 +51,14 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/blackbox-exporter/b
 ```
 
 ###查看pod状况(任何一个Master)
-[root@master01 ~]# kubectl get pod -n monitoring
-NAME                                 READY   STATUS    RESTARTS   AGE
-blackbox-exporter-7fd7d9997d-w54vl   1/1     Running   0          33s
-cadvisor-ncvp9                       1/1     Running   0          13m
-cadvisor-vzfp4                       1/1     Running   0          13m
-cadvisor-zzsfn                       1/1     Running   0          13m
-kube-state-metrics-598c57868-qbp87   1/1     Running   0          35m
-node-exporter-84ccs                  1/1     Running   0          25m
-node-exporter-pgvfq                  1/1     Running   0          25m
-node-exporter-ww8pd                  1/1     Running   0          25m
+[root@master01 ~]# kubectl get pod -l "app=blackbox-exporter" -n monitoring -o wide
+NAME                                 READY   STATUS    RESTARTS   AGE   IP              NODE                    NOMINATED NODE   READINESS GATES
+blackbox-exporter-7fd7d9997d-plpx6   1/1     Running   0          57s   172.16.201.67   node01.qytanghost.com   <none>           <none>
 
 ----------------------------------注意此处切换设备--------------------------------------
 
 ### 游览器访问 (mgmtwin7)
-https://blackbox.qytanghost.com/
+https://blackbox.qytangk8s.com/
+
+### 使用blackbox测试百度 (mgmtwin7)
+https://blackbox.qytangk8s.com/probe?target=baidu.com&module=http_2xx

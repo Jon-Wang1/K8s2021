@@ -15,19 +15,11 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/node-exporter/node-
 ```
 
 ### 查看pod状况(任何一个Master)
-[root@master01 ~]# kubectl get pod -n monitoring
-NAME                                 READY   STATUS    RESTARTS   AGE
-kube-state-metrics-598c57868-qbp87   1/1     Running   0          9m51s
-node-exporter-84ccs                  1/1     Running   0          24s
-node-exporter-pgvfq                  1/1     Running   0          24s
-node-exporter-ww8pd                  1/1     Running   0          24s
-
-[root@master01 ~]# kubectl get pod -n monitoring -o wide
-NAME                                 READY   STATUS    RESTARTS   AGE   IP               NODE                    NOMINATED NODE   READINESS GATES
-kube-state-metrics-598c57868-qbp87   1/1     Running   0          10m   172.16.201.144   node01.qytanghost.com   <none>           <none>
-node-exporter-84ccs                  1/1     Running   0          33s   172.16.201.145   node01.qytanghost.com   <none>           <none>
-node-exporter-pgvfq                  1/1     Running   0          33s   172.16.202.97    node02.qytanghost.com   <none>           <none>
-node-exporter-ww8pd                  1/1     Running   0          33s   172.16.203.142   node03.qytanghost.com   <none>           <none>
+[root@master01 ~]# kubectl get pod -l "app.kubernetes.io/name=node-exporter" -n monitoring -o wide
+NAME                  READY   STATUS    RESTARTS   AGE   IP              NODE                    NOMINATED NODE   READINESS GATES
+node-exporter-27wdq   1/1     Running   0          57s   172.16.203.66   node03.qytanghost.com   <none>           <none>
+node-exporter-gslc9   1/1     Running   0          57s   172.16.202.20   node02.qytanghost.com   <none>           <none>
+node-exporter-h5qj6   1/1     Running   0          57s   172.16.201.65   node01.qytanghost.com   <none>           <none>
 
 ----------------------------------注意此处切换设备--------------------------------------
 

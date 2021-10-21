@@ -55,6 +55,13 @@ systemctl restart named
 
 ----------------------------------注意此处切换设备--------------------------------------
 
+####查看pod（任何一个Master）
+[root@master01 ~]# kubectl get pod -l "app=grafana" -n monitoring
+NAME                      READY   STATUS    RESTARTS   AGE
+grafana-655945f7d-d8fss   1/1     Running   0          115s
+
+----------------------------------注意此处切换设备--------------------------------------
+
 ###网页登录 (mgmtwin7)
 https://grafana.qytangk8s.com
 默认用户密码 admin/admin
@@ -65,20 +72,7 @@ https://grafana.qytangk8s.com
 1. Org: qytang [Update organization name]
 2. TimeZone: local browser time
 
-### 安装插件 (任何一个Master)
-[root@master01 ~]# kubectl get pod -n monitoring
-NAME                                 READY   STATUS    RESTARTS   AGE
-alertmanager-695f8cb5f4-kv8w7        1/1     Running   0          28m
-blackbox-exporter-7fd7d9997d-frp7n   1/1     Running   0          7h25m
-cadvisor-2jmtp                       1/1     Running   0          8h
-cadvisor-9vqvt                       1/1     Running   0          8h
-cadvisor-vbnb8                       1/1     Running   0          8h
-grafana-655945f7d-hnmjs              1/1     Running   0          8m38s
-kube-state-metrics-598c57868-cl5ck   1/1     Running   0          8h
-node-exporter-fz826                  1/1     Running   0          8h
-node-exporter-qfkmk                  1/1     Running   0          8h
-node-exporter-qszz2                  1/1     Running   0          8h
-prometheus-5f75b6865c-84wzh          1/1     Running   0          7h
+----------------------------------注意此处切换设备--------------------------------------
 
 ### 进入grafana安装插件 (任何一个Master)
 ```shell

@@ -15,15 +15,11 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/cadvisor/cadvisor-d
 ```
 
 ###查看pod状况(任何一个Master)
-[root@master01 ~]# kubectl get pod -n monitoring -o wide
-NAME                                 READY   STATUS    RESTARTS   AGE   IP               NODE                    NOMINATED NODE   READINESS GATES
-cadvisor-ncvp9                       1/1     Running   0          19s   172.16.201.148   node01.qytanghost.com   <none>           <none>
-cadvisor-vzfp4                       0/1     Running   0          19s   172.16.203.143   node03.qytanghost.com   <none>           <none>
-cadvisor-zzsfn                       0/1     Running   0          19s   172.16.202.98    node02.qytanghost.com   <none>           <none>
-kube-state-metrics-598c57868-qbp87   1/1     Running   0          21m   172.16.201.144   node01.qytanghost.com   <none>           <none>
-node-exporter-84ccs                  1/1     Running   0          12m   172.16.201.145   node01.qytanghost.com   <none>           <none>
-node-exporter-pgvfq                  1/1     Running   0          12m   172.16.202.97    node02.qytanghost.com   <none>           <none>
-node-exporter-ww8pd                  1/1     Running   0          12m   172.16.203.142   node03.qytanghost.com   <none>           <none>
+[root@master01 ~]# kubectl get pod -l "app.kubernetes.io/name=cadvisor" -n monitoring -o wide
+NAME             READY   STATUS    RESTARTS   AGE   IP              NODE                    NOMINATED NODE   READINESS GATES
+cadvisor-7kwnt   1/1     Running   0          45s   172.16.201.66   node01.qytanghost.com   <none>           <none>
+cadvisor-nltwd   1/1     Running   0          45s   172.16.202.21   node02.qytanghost.com   <none>           <none>
+cadvisor-vrjts   1/1     Running   0          45s   172.16.203.67   node03.qytanghost.com   <none>           <none>
 
 ----------------------------------注意此处切换设备--------------------------------------
 

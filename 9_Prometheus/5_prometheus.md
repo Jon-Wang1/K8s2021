@@ -86,7 +86,7 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/prometheus/promethe
 
 ```
 
-### 快速更新Prometheus配置 (任何一个Master)
+### 快速更新Prometheus配置 （不时之需）(任何一个Master)
 ```shell
 kubectl delete configmap prometheus-config -n monitoring
 rm -f prometheus.yml
@@ -97,6 +97,7 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/prometheus/promethe
 kubectl delete pod $(kubectl get pod -l "app=prometheus" -n monitoring -o jsonpath='{.items[0].metadata.name}') -n monitoring
 
 ```
+
 ### 重新加载配置  (任何一个Master)
 ```
 curl -X POST http://prometheus.qytangk8s.com/-/reload

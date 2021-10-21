@@ -18,18 +18,9 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/alertmanager/alertm
 ```
 
 ### 查看pod信息
-[root@master01 ~]# kubectl get pod -n monitoring -o wide
-NAME                                 READY   STATUS    RESTARTS   AGE     IP               NODE                    NOMINATED NODE   READINESS GATES
-alertmanager-695f8cb5f4-kv8w7        1/1     Running   0          28s     172.16.203.167   node03.qytanghost.com   <none>           <none>
-blackbox-exporter-7fd7d9997d-frp7n   1/1     Running   0          6h57m   172.16.201.166   node01.qytanghost.com   <none>           <none>
-cadvisor-2jmtp                       1/1     Running   0          8h      172.16.202.119   node02.qytanghost.com   <none>           <none>
-cadvisor-9vqvt                       1/1     Running   0          8h      172.16.201.165   node01.qytanghost.com   <none>           <none>
-cadvisor-vbnb8                       1/1     Running   0          8h      172.16.203.153   node03.qytanghost.com   <none>           <none>
-kube-state-metrics-598c57868-cl5ck   1/1     Running   0          8h      172.16.202.118   node02.qytanghost.com   <none>           <none>
-node-exporter-fz826                  1/1     Running   0          8h      172.16.202.120   node02.qytanghost.com   <none>           <none>
-node-exporter-qfkmk                  1/1     Running   0          8h      172.16.201.164   node01.qytanghost.com   <none>           <none>
-node-exporter-qszz2                  1/1     Running   0          8h      172.16.203.154   node03.qytanghost.com   <none>           <none>
-prometheus-5f75b6865c-84wzh          1/1     Running   0          6h32m   172.16.201.167   node01.qytanghost.com   <none>           <none>
+[root@master01 ~]# kubectl get pod -l "app=alertmanager" -n monitoring -o wide
+NAME                            READY   STATUS    RESTARTS   AGE   IP              NODE                    NOMINATED NODE   READINESS GATES
+alertmanager-695f8cb5f4-j429v   1/1     Running   0          71s   172.16.202.26   node02.qytanghost.com   <none>           <none>
 
 ----------------------------------注意此处切换设备--------------------------------------
 
@@ -73,3 +64,6 @@ systemctl restart named
 kubectl scale deploy nameko-app -n devops --replicas=0
 
 ```
+
+### 访问alertmanager的首页，查看告警
+https://alertmanager.qytangk8s.com

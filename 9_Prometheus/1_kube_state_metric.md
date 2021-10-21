@@ -29,13 +29,9 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/kube-state-metrics/
 ```
 
 ### 查看pod状况(任何一个Master)
-[root@master01 ~]# kubectl get pod -n monitoring
-NAME                                 READY   STATUS    RESTARTS   AGE
-kube-state-metrics-598c57868-qbp87   1/1     Running   0          19s
-
-[root@master01 ~]# kubectl get pod -n monitoring -o wide
-NAME                                 READY   STATUS    RESTARTS   AGE   IP               NODE                    NOMINATED NODE   READINESS GATES
-kube-state-metrics-598c57868-qbp87   1/1     Running   0          31s   172.16.201.144   node01.qytanghost.com   <none>           <none>
+[root@master01 ~]# kubectl get pod -l "app.kubernetes.io/name=kube-state-metrics" -n monitoring -o wide
+NAME                                 READY   STATUS    RESTARTS   AGE   IP              NODE                    NOMINATED NODE   READINESS GATES
+kube-state-metrics-598c57868-ddkp9   1/1     Running   0          66s   172.16.201.64   node01.qytanghost.com   <none>           <none>
 
 ----------------------------------注意此处切换设备--------------------------------------
 
