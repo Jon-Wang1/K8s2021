@@ -4,6 +4,7 @@ wget http://mgmtcentos.qytanghost.com/configmap/nginx.conf
 kubectl create configmap qytang-configmap-nginx-conf --from-file=nginx.conf
 wget http://mgmtcentos.qytanghost.com/configmap/index.html
 kubectl create configmap qytang-configmap-nginx-html --from-file=index.html
+
 ```
 
 ### 查看cm (任何一个Master)
@@ -75,19 +76,15 @@ Events:  <none>
 kubectl apply -f http://mgmtcentos.qytanghost.com/configmap/nginx-curl-configmap-dp.yaml
 kubectl apply -f http://mgmtcentos.qytanghost.com/configmap/svc-dp.yaml
 kubectl apply -f http://mgmtcentos.qytanghost.com/configmap/ingress-dp.yaml
+
 ```
 
 ### 查看pod (任何一个Master)
-[root@master01 ~]# kubectl get pod -o wide
-NAME                                         READY   STATUS    RESTARTS   AGE     IP              NODE                    NOMINATED NODE   READINESS GATES
-nginx-curl-configmap-5dcfb6dd5d-qdtx6        1/1     Running   0          2m3s
+[root@master01 ~]# kubectl get pod -l "app=nginx-curl-configmap" -o wide
+NAME                                    READY   STATUS    RESTARTS   AGE   IP              NODE                    NOMINATED NODE   READINESS GATES
+nginx-curl-configmap-5dcfb6dd5d-cn8t5   1/1     Running   0          28s   172.16.201.15   node01.qytanghost.com   <none>           <none>
 
-### http测试 注意:查看具体的Node (mgmtwin7)
-```shell script
-http://node01.qytanghost.com:6888/
-
-https://nginx-configmap.qytangk8s.com/
-```
+----------------------------------注意此处切换设备--------------------------------------
 
 ### 配置DNS (DNSCA)
 ```shell script
@@ -116,17 +113,25 @@ systemctl restart named
 
 ```
 
-### 修改ConfigMap
-#### 方案一
+----------------------------------注意此处切换设备--------------------------------------
+
+### http测试 注意:查看具体的Node (mgmtwin7)
+http://node01.qytanghost.com:6888/
+https://nginx-configmap.qytangk8s.com/
+
+----------------------------------注意此处切换设备--------------------------------------
+
+### 修改ConfigMap (任何一个Master)
+#### 方案一 (任何一个Master)
 kubectl delete configmap qytang-configmap-nginx-html
 wget http://mgmtcentos.qytanghost.com/configmap/index.html
 kubectl create configmap qytang-configmap-nginx-html --from-file=index.html
 
-#### 方案二
+#### 方案二 (任何一个Master)
 kubectl edit cm qytang-configmap-nginx-html
 
-#### 方案三
+#### 方案三 (任何一个Master)
 kubectl create configmap qytang-configmap-nginx-html --from-file index.html -o yaml --dry-run=client | kubectl apply -f -
 
-#### 方案四
+#### 方案四 (任何一个Master)
 使用Dashboard修改
