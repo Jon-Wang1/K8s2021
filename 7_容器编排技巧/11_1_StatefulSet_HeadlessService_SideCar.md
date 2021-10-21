@@ -20,6 +20,8 @@ docker push harbor.qytanghost.com/public/mongo-k8s-sidecar
 
 ```
 
+----------------------------------注意此处切换设备--------------------------------------
+
 ### 应用资源配置清单 (任何一个Master)
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/stateful_mongodb/svc.yaml
@@ -33,16 +35,21 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/stateful_mongodb/ss.yaml
 NAME    READY   AGE
 mongo   3/3     8m58s
 
+### 使用下面命令查看整个创建过程 (任何一个Master)
+```shell
+watch kubectl get pod -l "role=mongo"
+
+```
 
 ### 查看Pod, 他们有固定的名字 (任何一个Master)
-[root@master01 ~]# kubectl get pod
+[root@master01 ~]# kubectl get pod -l "role=mongo"
 NAME      READY   STATUS    RESTARTS   AGE
 mongo-0   2/2     Running   0          9m39s
 mongo-1   2/2     Running   0          8m52s
 mongo-2   2/2     Running   0          8m32s
 
+
 ### 查看svc (任何一个Master)
-```shell script
 [root@master01 ~]# kubectl describe svc mongo
 Name:              mongo
 Namespace:         default
@@ -55,15 +62,15 @@ TargetPort:        27017/TCP
 Endpoints:         172.16.201.11:27017,172.16.202.2:27017,172.16.203.20:27017
 Session Affinity:  None
 Events:            <none>
-```
 
 ### 测试无头服务的dns解析 (任何一个Master)
 #### 进入容器
 ```shell script
 kubectl exec -it $(kubectl get pod -l "app=qyt-lb-dp-label" -o jsonpath='{.items[0].metadata.name}') -- /bin/bash
+
 ```
 
-#### 测试dns解析
+#### 测试dns解析 (任何一个Master)
 [root@qyt-lb-dp-7f677cd4cf-wdf8m qytang]# nslookup
 > mongo
 Server:         192.168.0.2

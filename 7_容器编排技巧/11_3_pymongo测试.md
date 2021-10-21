@@ -1,19 +1,22 @@
-### 进入容器qyt-lb-dp
+### 进入容器qyt-lb-dp （任何一个Master）
 ```shell script
 kubectl exec -it $(kubectl get pod -l "app=qyt-lb-dp-label" -o jsonpath='{.items[0].metadata.name}') -- /bin/bash
+
 ```
 
-#### 安装Python3
+#### 安装Python3 （任何一个Master）
 ```shell script
 yum install -y python3
+
 ```
 
-#### 安装pymongo模块
+#### 安装pymongo模块 （任何一个Master）
 ```shell script
 pip3 install pymongo
+
 ```
 
-#### 交互式界面测试mongo集群
+#### 交互式界面测试mongo集群 （任何一个Master）
 [root@qyt-lb-dp-7f677cd4cf-wdf8m qytang]# python3
 
 >>> from pymongo import *

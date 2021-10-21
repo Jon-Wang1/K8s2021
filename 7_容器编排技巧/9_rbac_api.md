@@ -1,4 +1,4 @@
-### 产生Python api测试的镜像 (DNSCA)
+### 产生Python api测试的镜像 (mgmtcentos)
 ```shell script
 cd /K8S2021/yaml_dockerfile/dockerfile/api-rbac/
 docker build -t harbor.qytanghost.com/public/api-rbac .
@@ -6,8 +6,10 @@ docker push harbor.qytanghost.com/public/api-rbac
 
 ```
 
-### 查看当前k8s cluster中的api资源
-[root@master02 ~]# kubectl api-resources -o wide
+----------------------------------注意此处切换设备--------------------------------------
+
+### 查看当前k8s cluster中的api资源 （任何一个Master）
+[root@master01 ~]# kubectl api-resources -o wide
 NAME                              SHORTNAMES        APIGROUP                       NAMESPACED   KIND                             VERBS
 bindings                                                                           true         Binding                          [create]
 componentstatuses                 cs                                               false        ComponentStatus                  [get list]
@@ -77,7 +79,7 @@ csinodes                                            storage.k8s.io              
 storageclasses                    sc                storage.k8s.io                 false        StorageClass                     [create delete deletecollection get list patch update watch]
 volumeattachments                                   storage.k8s.io                 false        VolumeAttachment                 [create delete deletecollection get list patch update watch]
 
-### 查看特定的api资源
+### 查看特定的api资源 （任何一个Master）
 [root@master02 ~]# kubectl api-resources -o wide | grep -i pods
 pods                              po                                               true         Pod                              [create delete deletecollection get list patch update watch]
 podsecuritypolicies               psp               policy                         false        PodSecurityPolicy                [create delete deletecollection get list patch update watch]
@@ -85,34 +87,38 @@ podsecuritypolicies               psp               policy                      
 [root@master02 ~]# kubectl api-resources -o wide | grep -i deployment
 deployments                       deploy            apps                           true         Deployment                       [create delete deletecollection get list patch update watch]
 
-### api实例
+### api实例 （任何一个Master）
 https://github.com/kubernetes-client/python/tree/master/examples
 
-### 应用rbac资源配置清单
+### 应用rbac资源配置清单 （任何一个Master）
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/api/rbac.yaml
+
 ```
 
-### 应用deployment资源配置清单
+### 应用deployment资源配置清单 （任何一个Master）
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/api/api-dp.yaml
+
 ```
 
-### 查看pod
+### 查看pod （任何一个Master）
 ```shell script
 kubectl get pod $(kubectl get pod -l "app=api-dp" -o jsonpath='{.items[0].metadata.name}')
+
 ```
 
-#### 返回结果
+#### 返回结果 （任何一个Master）
 NAME                      READY   STATUS    RESTARTS   AGE
 api-dp-54d8649bfb-4q4tm   1/1     Running   0          82s
 
-### 进入pod
+### 进入pod （任何一个Master）
 ```shell script
 kubectl exec -it $(kubectl get pod -l "app=api-dp" -o jsonpath='{.items[0].metadata.name}')  -- /bin/bash
+
 ```
 
-#### 容器内查看文件
+#### 容器内查看文件 （任何一个Master）
 [root@api-dp-54d8649bfb-4q4tm qytang]# ls -an
 total 36
 drwxr-xr-x 1 0 0   30 Oct 14 19:15 .
@@ -127,47 +133,68 @@ drwxr-xr-x 1 0 0   28 Oct 14 19:19 ..
 -rwxr-xr-x 1 0 0  901 Oct 14 19:15 update_deploy.py
 -rwxr-xr-x 1 0 0  657 Oct 14 19:15 watch_pods.py
 
-### 容器内测试list pods
+### 容器内测试list pods （任何一个Master）
 ```shell script
 python3 get_pods.py 
+
 ```
 
-### 容器内测试watch pods,能实时显示pod操作
+### 容器内测试watch pods,能实时显示pod操作 （任何一个Master）
 ```shell script
 python3 watch_pods.py 
+
 ```
 
 ### 创建一个pod测试 (任何一个Master)
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/qyt-lb/qyt-lb-dp.yaml
+
 ```
 
-### 容器内get特定pod详情
+### 容器内get特定pod详情 （任何一个Master）
 ```shell script
 python3 get_pod_detail.py app=api-dp
+
 ```
 
-### 容器内get pod/log
+### 容器内get pod/log （任何一个Master）
 ```shell script
-python3 get_pod_logs.py qyt-lb-dp-7f677cd4cf-wdf8m
+python3 get_pod_logs.py qyt-lb-dp-7f677cd4cf-8869j
+
 ```
 
-### 容器内create deploy
+### 容器内create deploy （任何一个Master）
 ```shell script
 python3 create_deploy.py 
+
 ```
 
-### 容器内update deploy (api 为 patch)
+### 查看创建的pods(任何一个Master)
+[root@master02 ~]# kubectl get pod
+NAME                                         READY   STATUS    RESTARTS   AGE
+nginx-deployment-5dd6f4f544-f4s2s            1/1     Running   0          5m38s
+nginx-deployment-5dd6f4f544-nq7lr            1/1     Running   0          5m38s
+nginx-deployment-5dd6f4f544-xsbdp            1/1     Running   0          5m38s
+
+### 容器内create deploy从yaml （任何一个Master）
+```shell script
+python3 create_deploy_yaml.py
+
+```
+
+### 查看创建的pods(任何一个Master)
+[root@master02 ~]# kubectl get pod
+NAME                                         READY   STATUS    RESTARTS   AGE
+nginx-pod-api-from-yaml-9db56fff6-dcfmr      1/1     Running   0          31s
+
+### 容器内update deploy (api 为 patch) （任何一个Master）
 ```shell script
 python3 update_deploy.py 
+
 ```
 
-### 容器内delete deploy
+### 容器内delete deploy （任何一个Master）
 ```shell script
 python3 delete_deploy.py 
-```
 
-### 容器内create deploy and svc from yaml
-```shell script
-python3 create_deploy_yaml.py 
 ```

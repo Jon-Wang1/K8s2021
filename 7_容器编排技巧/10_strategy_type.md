@@ -1,11 +1,13 @@
-### rolling update发布
+### rolling update发布  （任何一个Master）
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/strategy-type/strategy-rollingupdate.yaml
+
 ```
 
-### 查看rollout状态
+### 查看rollout状态  （任何一个Master）
 ```shell script
 kubectl rollout status deploy strategy-rollingupdate
+
 ```
 
 ### 下面是输出结果
@@ -33,20 +35,23 @@ Waiting for deployment "strategy-rollingupdate" rollout to finish: 7 of 10 updat
 Waiting for deployment "strategy-rollingupdate" rollout to finish: 8 of 10 updated replicas are available...
 Waiting for deployment "strategy-rollingupdate" rollout to finish: 9 of 10 updated replicas are available...
 
-### 删除rolling update发布的dp
+### 删除rolling update发布的dp（任何一个Master）
 ```shell
 kubectl delete -f http://mgmtcentos.qytanghost.com/strategy-type/strategy-rollingupdate.yaml
+
 ```
 
 
-### recreate发布
+### recreate发布（任何一个Master）
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/strategy-type/strategy-recreate.yaml
+
 ```
 
-### 查看rollout状态
+### 查看rollout状态（任何一个Master）
 ```shell script
 kubectl rollout status deploy strategy-recreate
+
 ```
 
 ### 下面是输出结果
@@ -65,7 +70,8 @@ Waiting for deployment "strategy-recreate" rollout to finish: 8 of 10 updated re
 Waiting for deployment "strategy-recreate" rollout to finish: 9 of 10 updated replicas are available...
 deployment "strategy-recreate" successfully rolled out
 
-### 删除recreate发布发布的dp
+### 删除recreate发布发布的dp（任何一个Master）
 ```shell
 kubectl delete -f http://mgmtcentos.qytanghost.com/strategy-type/strategy-recreate.yaml
+
 ```
