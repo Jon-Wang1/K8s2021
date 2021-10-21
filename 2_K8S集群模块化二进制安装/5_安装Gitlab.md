@@ -19,6 +19,12 @@ sudo docker run --detach \
 
 ```
 
+### 等待直到出现 (health: healthy)(gitlab)
+[root@gitlab ~]# docker ps
+CONTAINER ID   IMAGE              COMMAND             CREATED         STATUS                   PORTS                                                                                                             NAMES
+54198f33e795   gitlab/gitlab-ce   "/assets/wrapper"   5 minutes ago   Up 5 minutes (healthy)   0.0.0.0:80->80/tcp, :::80->80/tcp, 0.0.0.0:443->443/tcp, :::443->443/tcp, 0.0.0.0:2222->22/tcp, :::2222->22/tcp   gitlab
+
+
 ### 如果第一次启动出现(health: unhealthy). 尝试重启容器 (gitlab)
 ```shell
 docker restart gitlab

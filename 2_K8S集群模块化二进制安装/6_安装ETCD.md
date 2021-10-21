@@ -23,6 +23,7 @@ cat >/opt/certs/etcd-peer-csr.json <<EOF
     ]
 }
 EOF
+
 ```
 
 # 进入目录签发证书(dnsca)
@@ -107,6 +108,8 @@ https://www.cnblogs.com/lowezheng/p/10307592.html
 --quota-backend-bytes 参数介绍:
 https://www.cnblogs.com/davygeek/p/8951999.html
 
+----------------------------------注意此处切换设备--------------------------------------
+
 ### etcd启动脚本(master01)
 ```shell script
 cat >/opt/etcd/etcd-server-startup.sh <<'EOF'
@@ -138,6 +141,8 @@ etcd_name_host3=master03.qytanghost.com
 EOF
 
 ```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ### etcd启动脚本(master02)
 ```shell script
@@ -171,6 +176,8 @@ EOF
 
 ```
 
+----------------------------------注意此处切换设备--------------------------------------
+
 ### etcd启动脚本(master03)
 ```shell script
 cat >/opt/etcd/etcd-server-startup.sh <<'EOF'
@@ -202,6 +209,8 @@ etcd_name_host3=master03.qytanghost.com
 EOF
 
 ```
+
+----------------------------------注意此处切换设备--------------------------------------
 
 ### 使用supervisor启动etc脚本(master01, master02, master03)
 ```shell script

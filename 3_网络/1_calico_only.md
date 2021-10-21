@@ -64,9 +64,15 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/calico/custom-resources.yaml
 ```
 
 ### 应用资源配置清单,安装calicoctl(任何一个Master)
-# https://docs.projectcalico.org/getting-started/clis/calicoctl/install
+#### https://docs.projectcalico.org/getting-started/clis/calicoctl/install
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/calico/calicoctl.yaml
+
+```
+
+### 可以使用如下命令，监控pod创建进程
+```shell
+watch kubectl get pods -n calico-system
 
 ```
 
@@ -121,31 +127,31 @@ kubectl label nodes node03.qytanghost.com rack=3
 
 ```
 
-# 授权etcd-client kubelet-api-admin （etcd-client这个证书，用来和apiserver通信写入apiserver数据库）(任何一个Master)
+### 授权etcd-client kubelet-api-admin （etcd-client这个证书，用来和apiserver通信写入apiserver数据库）(任何一个Master)
 ```shell
 kubectl create clusterrolebinding kube-apiserver:kubelet-apis --clusterrole=system:kubelet-api-admin --user etcd-client
 
 ```
 
-# 查看地址池(任何一个Master)
+### 查看地址池(任何一个Master)
 ```shell
 kubectl exec -it calicoctl -n kube-system -- calicoctl get ippool -o wide
 
 ```
-# 删除默认的地址池(任何一个Master)
+### 删除默认的地址池(任何一个Master)
 ```shell
 kubectl exec -it calicoctl -n kube-system -- calicoctl delete ippools default-ipv4-ippool
 
 ```
 
-# 下载资源配置清单(任何一个Master)
+### 下载资源配置清单(任何一个Master)
 ```shell
 wget http://mgmtcentos.qytanghost.com/calico/node01.yaml
 wget http://mgmtcentos.qytanghost.com/calico/node02.yaml
 wget http://mgmtcentos.qytanghost.com/calico/node03.yaml
 
 ```
-# 应用资源配置清单(任何一个Master)
+### 应用资源配置清单(任何一个Master)
 ```shell
 kubectl exec -it calicoctl -n kube-system -- calicoctl create -f - < node01.yaml
 kubectl exec -it calicoctl -n kube-system -- calicoctl create -f - < node02.yaml
@@ -153,9 +159,16 @@ kubectl exec -it calicoctl -n kube-system -- calicoctl create -f - < node03.yaml
 
 ```
 
-# 查看地址池(任何一个Master)
+### 查看地址池(任何一个Master)
 [root@master01 ~]# kubectl exec -it calicoctl -n kube-system -- calicoctl get ippool -o wide
 NAME            CIDR              NAT    IPIPMODE   VXLANMODE   DISABLED   SELECTOR
 rack-1-ippool   172.16.201.0/24   true   Never      Always      false      rack == "1"
 rack-2-ippool   172.16.202.0/24   true   Never      Always      false      rack == "2"
 rack-3-ippool   172.16.203.0/24   true   Never      Always      false      rack == "3"
+
+### 查看node状态（已经Ready了）(任何一个Master)
+[root@master01 ~]# kubectl get node
+NAME                    STATUS   ROLES   AGE   VERSION
+node01.qytanghost.com   Ready    node    75m   v1.20.11
+node02.qytanghost.com   Ready    node    75m   v1.20.11
+node03.qytanghost.com   Ready    node    75m   v1.20.11

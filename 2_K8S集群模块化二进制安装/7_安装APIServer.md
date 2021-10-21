@@ -161,6 +161,7 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem \
 ### 产生用于--service-account-key-file的公钥 (dnsca)
 ```shell script
 # 产生秘钥对
+cd /opt/certs
 openssl genrsa -des3 -out rsapair.pem 2048
 
 # 导出公钥
