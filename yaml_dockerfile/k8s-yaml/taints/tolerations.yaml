@@ -17,6 +17,8 @@ spec:
         image: harbor.qytanghost.com/public/nginx_curl # 容器的镜像
         ports:
         - containerPort: 80
+      nodeSelector:
+        kubernetes.io/hostname: node01.qytanghost.com
       tolerations:
       - key: disk
         operator: Equal
