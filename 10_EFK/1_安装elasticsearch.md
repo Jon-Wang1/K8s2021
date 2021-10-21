@@ -29,6 +29,7 @@ docker push harbor.qytanghost.com/efk/elasticsearch:7.14.2
 ### 创建命名空间efk(任何一个Master)
 ```shell script
 kubectl create ns efk
+
 ```
 
 ----------------------------------注意此处切换设备--------------------------------------
@@ -80,10 +81,15 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/efk/elasticsearch-ingress.yaml
 
 ```
 
+### 查看PVC （任何一个Master）
+[root@master02 ~]# kubectl get pvc -n efk
+NAME                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+elasticsearch-pvc   Bound    pvc-1a7f978b-cd77-4070-a3b7-d5f6ad79bde6   100Gi      RWO            rook-cephfs    27s
+
 ### 查看容器(任何一个Master)
-[root@master02 ~]# kubectl get pod -n efk -o wide
-NAME                             READY   STATUS    RESTARTS   AGE   IP               NODE                    NOMINATED NODE   READINESS GATES
-elasticsearch-5d96668d69-rwj6m   1/1     Running   0          90s   172.16.201.171   node01.qytanghost.com   <none>           <none>
+[root@master02 ~]# kubectl get pod -l "app=elasticsearch" -n efk -o wide
+NAME                             READY   STATUS    RESTARTS   AGE    IP              NODE                    NOMINATED NODE   READINESS GATES
+elasticsearch-5d96668d69-n4xnp   1/1     Running   0          2m7s   172.16.201.70   node01.qytanghost.com   <none>           <none>
 
 ----------------------------------注意此处切换设备--------------------------------------
 

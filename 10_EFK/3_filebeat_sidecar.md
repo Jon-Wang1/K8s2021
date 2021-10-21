@@ -33,3 +33,7 @@ kubectl delete deploy nameko-nginx -n devops
 kubectl apply -f http://mgmtcentos.qytanghost.com/efk/filebeat-nginx.yaml
 
 ```
+
+### 测试访问网页 （mgmtwin7）
+https://nameko-app.qytangk8s.com
+https://nameko-app.qytangk8s.com/error

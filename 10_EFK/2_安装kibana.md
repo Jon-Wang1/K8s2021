@@ -56,6 +56,17 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/efk/kibana-ingress.yaml
 
 ```
 
+### 查看PVC (任何Master)
+[root@master01 ~]# kubectl get pvc -n efk
+NAME                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+kibana-pvc          Bound    pvc-f9e4287f-dd5d-4ff6-bc50-c8d5d51e9e78   100Gi      RWO            rook-cephfs    34s
+
+### 查看POD (任何一个Master)
+[root@master01 ~]# kubectl get pod -l "app=kibana" -n efk -o wide
+NAME                      READY   STATUS    RESTARTS   AGE    IP              NODE                    NOMINATED NODE   READINESS GATES
+kibana-84ccdb896b-qdsmq   1/1     Running   0          2m3s   172.16.202.29   node02.qytanghost.com   <none>           <none>
+
+
 ----------------------------------注意此处切换设备--------------------------------------
 
 ###测试kibana首页 (mgmtwin7)
