@@ -10,7 +10,7 @@ docker push harbor.qytanghost.com/public/coredns:v1.8.6
 
 ### 应用资源配置清单 (任何一个Master)
 
-### 资源配置清单参考
+### 资源配置清单参考 (任何一个Master)
 ### https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/dns/coredns/coredns.yaml.base
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/coredns/rbac.yaml
@@ -169,7 +169,7 @@ qyt-lb-ds-rlxq2              1/1     Running   0          33m
 qyt-lb-ds-tz9pm              1/1     Running   0          33m
 qyt-lb-ds-zmpls              1/1     Running   0          33m
 
-[root@master01 ~]# kubectl exec -it qyt-lb-dp-7f677cd4cf-bq6gg -- /bin/bash
+[root@master01 ~]# kubectl exec -it $(kubectl get pod -l "app=qyt-lb-dp-label" -o jsonpath='{.items[0].metadata.name}') -- /bin/bash
 
 [root@qyt-lb-dp-7f677cd4cf-bq6gg qytang]# nslookup
 > qyt-lb-ds-service
@@ -177,13 +177,13 @@ Server:         192.168.0.2
 Address:        192.168.0.2#53
 
 Name:   qyt-lb-ds-service.default.svc.cluster.local
-Address: 192.168.197.39
+Address: 192.168.197.39 （这是DNS解析的地址）
 > qyt-lb-dp-service
 Server:         192.168.0.2
 Address:        192.168.0.2#53
 
 Name:   qyt-lb-dp-service.default.svc.cluster.local
-Address: 192.168.53.32
+Address: 192.168.53.32 （这是DNS解析的地址）
 >
 
 

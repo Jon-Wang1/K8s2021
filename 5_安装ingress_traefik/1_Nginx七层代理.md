@@ -42,7 +42,7 @@ yum install -y sshpass
 
 ```
 
-### 确认dnsca.qytanghost.com的秘钥 (Nginx01, Nginx02)
+### 确认dnsca.qytanghost.com的秘钥 (Nginx01, Nginx02) (应该之前做过了)
 [root@nginx02 ~]# ssh root@dnsca.qytanghost.com
 The authenticity of host 'dnsca.qytanghost.com (10.1.1.219)' can't be established.
 ECDSA key fingerprint is SHA256:jWlSzcu5QdgKgh19Haz/pXf4AfIwbt9cfzDERxuzwCs.
