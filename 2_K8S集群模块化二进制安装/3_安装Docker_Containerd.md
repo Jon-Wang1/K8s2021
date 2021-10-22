@@ -45,3 +45,65 @@ sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 
 ```
+
+
+=============================================安装Containerd========================================
+### 参考文章
+https://blog.csdn.net/tongzidane/article/details/114285188
+
+### Github
+https://github.com/containerd/containerd/
+
+### 下载二进制文件 (所有计算节点)
+```shell
+yum install -y wget
+wget https://github.com/containerd/containerd/releases/download/v1.5.7/containerd-1.5.7-linux-amd64.tar.gz
+
+```
+
+### 解压缩  (所有计算节点)
+```shell
+tar -xvf containerd-1.5.7-linux-amd64.tar.gz -C /usr/local/
+
+```
+
+### 创建目录并生成默认文件 (所有计算节点)
+```shell
+mkdir /etc/containerd
+containerd config default> /etc/containerd/config.toml
+
+```
+
+### 配置containerd.service服务文件 (所有计算节点)
+```shell
+cat >/usr/lib/systemd/system/containerd.service <<EOF
+[Unit]
+Description=containerd container runtime
+Documentation=https://containerd.io
+After=network.target
+ 
+[Service]
+ExecStartPre=/sbin/modprobe overlay
+ExecStart=/usr/local/bin/containerd
+Delegate=yes
+KillMode=process
+LimitNOFILE=1048576
+# Having non-zero Limit*s causes performance problems due to accounting overhead
+# in the kernel. We recommend using cgroups to do container-local accounting.
+LimitNPROC=infinity
+LimitCORE=infinity
+ 
+[Install]
+WantedBy=multi-user.target
+EOF
+
+```
+
+### 加载并启动服务 
+```shell
+systemctl daemon-reload 
+systemctl enable containerd
+systemctl start containerd
+systemctl status containerd
+
+```

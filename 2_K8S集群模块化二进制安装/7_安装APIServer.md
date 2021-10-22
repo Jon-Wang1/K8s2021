@@ -522,4 +522,4 @@ kube-apiserver                   RUNNING   pid 1750, uptime 0:00:38
 ### 查看开放端口 (Master01, Master02 and Master03)
 [root@master0x cert]# netstat -tulnp | grep kube-api
 #### https 6443 提供kubelet 连接
-tcp6       0      0 :::6443                 :::*                    LISTEN      2027/./kube-apiserv```
+tcp6       0      0 :::6443                 :::*                    LISTEN      2027/./kube-apiserv
