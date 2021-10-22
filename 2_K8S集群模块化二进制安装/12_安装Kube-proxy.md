@@ -194,7 +194,7 @@ yum install ipvsadm -y
 IP Virtual Server version 1.2.1 (size=4096)
 Prot LocalAddress:Port Scheduler Flags
   -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
-TCP  192.168.0.1:443 nq
+TCP  192.168.0.1:443 rr
   -> 10.1.1.101:6443              Masq    1      0          0         
   -> 10.1.1.102:6443              Masq    1      0          0         
   -> 10.1.1.103:6443              Masq    1      0          0   

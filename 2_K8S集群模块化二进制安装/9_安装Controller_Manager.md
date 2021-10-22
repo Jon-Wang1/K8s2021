@@ -232,7 +232,6 @@ cat >/opt/kubernetes/server/bin/kube-controller-manager.sh <<'EOF'
   --authentication-kubeconfig=/opt/kubernetes/server/conf/kube-controller-manager.kubeconfig \
   --authorization-kubeconfig=/opt/kubernetes/server/conf/kube-controller-manager.kubeconfig \
   --kubeconfig=/opt/kubernetes/server/conf/kube-controller-manager.kubeconfig \
-  --master https://kubernetes.qytanghost.com:6443 \
   --service-account-private-key-file /opt/kubernetes/server/cert/private.pem \
   --v 2
 EOF
