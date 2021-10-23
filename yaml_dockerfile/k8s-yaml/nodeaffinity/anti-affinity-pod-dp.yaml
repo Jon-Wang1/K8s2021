@@ -20,10 +20,10 @@ spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:  # pod需要的标签
+          - labelSelector:  # Pod需要的标签
               matchExpressions:
               - key: qytaffinity
                 operator: In
                 values:
                 - qytang
-            topologyKey: rack  # Rack需要的标签
+            topologyKey: rack  # Node需要的标签

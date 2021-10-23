@@ -25,7 +25,7 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-              - matchExpressions:  # node需要匹配的标签
+              - matchExpressions:  # Node需要匹配的标签
                   - key: kubernetes.io/hostname
                     operator: In
                     values:
