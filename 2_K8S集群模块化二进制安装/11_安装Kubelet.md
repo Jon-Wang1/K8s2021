@@ -176,6 +176,9 @@ system:node                                             2021-10-10T07:00:02Z
 qytang-k8s-node                                         ClusterRole/system:node        80s
 
 ----------------------------------注意此处切换设备--------------------------------------
+### 添加如下两句就使用Containerd
+  --container-runtime=remote \
+  --container-runtime-endpoint=unix:///run/containerd/containerd.sock \
 
 ### kubelet启动脚本 (Node01)
 ```shell script
@@ -191,6 +194,8 @@ cat >/opt/kubernetes/node/bin/kubelet.sh <<'EOF'
   --cluster-domain cluster.local \
   --runtime-cgroups=/systemd/system.slice \
   --kubelet-cgroups=/systemd/system.slice \
+  --container-runtime=remote \
+  --container-runtime-endpoint=unix:///run/containerd/containerd.sock \
   --fail-swap-on="false" \
   --network-plugin=cni \
   --client-ca-file /opt/kubernetes/node/cert/ca.pem \
@@ -222,6 +227,8 @@ cat >/opt/kubernetes/node/bin/kubelet.sh <<'EOF'
   --cluster-domain cluster.local \
   --runtime-cgroups=/systemd/system.slice \
   --kubelet-cgroups=/systemd/system.slice \
+  --container-runtime=remote \
+  --container-runtime-endpoint=unix:///run/containerd/containerd.sock \
   --fail-swap-on="false" \
   --network-plugin=cni \
   --client-ca-file /opt/kubernetes/node/cert/ca.pem \
@@ -253,6 +260,8 @@ cat >/opt/kubernetes/node/bin/kubelet.sh <<'EOF'
   --cluster-domain cluster.local \
   --runtime-cgroups=/systemd/system.slice \
   --kubelet-cgroups=/systemd/system.slice \
+  --container-runtime=remote \
+  --container-runtime-endpoint=unix:///run/containerd/containerd.sock \
   --fail-swap-on="false" \
   --network-plugin=cni \
   --client-ca-file /opt/kubernetes/node/cert/ca.pem \
