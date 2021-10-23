@@ -84,6 +84,7 @@ grafana-cli plugins install briangann-gauge-panel
 grafana-cli plugins install natel-discrete-panel
 
 reboot
+
 ```
 
 ### 添加数据源 configuration --- Data Source --- Add Data Source
