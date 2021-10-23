@@ -130,3 +130,20 @@ EOF
 ----------------------------------注意此处切换设备--------------------------------------
 
 ### mgmtwin7 下载根证书ca.pem, 改名为ca.cer, 双击安装到“受信任的根颁发机构” （mgmtwin7）
+
+----------------------------------注意此处切换设备--------------------------------------
+
+### 下载根证书(gitlab, harbor, mgmtcentos, master01, master02, master03, node01, node02, node03)
+```shell
+yum install -y epel-release
+yum install -y sshpass
+
+mkdir -p /opt/certs
+cd /opt/certs
+sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/ca.pem .
+
+cat ca.pem >> qytanghost.com.crt
+cp qytanghost.com.crt /etc/pki/ca-trust/source/anchors/qytanghost.com.crt
+update-ca-trust
+
+```

@@ -145,6 +145,7 @@ docker run --rm -v $input_dir:/input \
 cd /opt/harbor
 cp harbor.yml.tmpl harbor.yml
 vim harbor.yml
+
 ```
 
 ### 具体修改内容
@@ -181,10 +182,6 @@ sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/ca.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/harbor-key.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/harbor.pem .
 
-cat ca.pem >> qytanghost.com.crt
-cp qytanghost.com.crt /etc/pki/ca-trust/source/anchors/qytanghost.com.crt
-update-ca-trust
-
 ```
 
 ### 安装Harbor(harbor)
@@ -196,22 +193,16 @@ cd /opt/harbor
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-### 下载根证书(gitlab, mgmtcentos, master01, master02, master03, node01, node02, node03)
-```shell
-yum install -y epel-release
-yum install -y sshpass
+### 从dnsca下载根证书ca.pem到管理WIN7(管理Win7）[详细操作参考PPT]
+### 改名ca.pem到ca.cer(管理Win7）[详细操作参考PPT]
+### 加载到受信任根证书颁发机构(管理Win7）[详细操作参考PPT]
+### 游览器访问https://harbor.qytanghost.com测试(管理Win7） [详细操作参考PPT]
+### 新建项目public(公开)(管理Win7）[详细操作参考PPT]
 
-mkdir -p /opt/certs
-cd /opt/certs
-sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/ca.pem .
+----------------------------------注意此处切换设备--------------------------------------
 
-cat ca.pem >> qytanghost.com.crt
-cp qytanghost.com.crt /etc/pki/ca-trust/source/anchors/qytanghost.com.crt
-update-ca-trust
-
-```
-### docker login harbor.qytanghost.com测试(gitlab, mgmtcentos, master01, master02, master03, node01, node02, node03)
-[root@master02 certs]# docker login harbor.qytanghost.com
+### docker login harbor.qytanghost.com测试(gitlab, harbor, mgmtcentos, master01, master02, master03, node01, node02, node03)
+[root@master01 certs]# docker login harbor.qytanghost.com
 Username: admin
 Password:
 WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
@@ -221,24 +212,6 @@ https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 Login Succeeded
 
 ----------------------------------注意此处切换设备--------------------------------------
-
-### 从dnsca下载根证书ca.pem到管理WIN7(管理Win7）[详细操作参考PPT]
-### 改名ca.pem到ca.cer(管理Win7）[详细操作参考PPT]
-### 加载到受信任根证书颁发机构(管理Win7）[详细操作参考PPT]
-### 游览器访问https://harbor.qytanghost.com测试(管理Win7） [详细操作参考PPT]
-### 新建项目public(公开)(管理Win7）[详细操作参考PPT]
-
-----------------------------------注意此处切换设备--------------------------------------
-
-### harbor 登录 harbor.qytanghost.com (harbor)
-[root@harbor harbor]# docker login harbor.qytanghost.com
-Username: admin
-Password: Cisc0123
-WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
-Configure a credential helper to remove this warning. See
-https://docs.docker.com/engine/reference/commandline/login/#credentials-store
-
-Login Succeeded
 
 ### harbor拉取镜像(harbor)
 ```shell
