@@ -35,6 +35,7 @@ qytang-secret-yaml      Opaque                                2      24s
 
 ### 修改nginx_curl的tag,并上传到private仓库  (mgmtcentos)
 ```shell script
+docker pull harbor.qytanghost.com/public/nginx_curl
 docker tag harbor.qytanghost.com/public/nginx_curl harbor.qytanghost.com/private/nginx_curl
 docker push harbor.qytanghost.com/private/nginx_curl
 
