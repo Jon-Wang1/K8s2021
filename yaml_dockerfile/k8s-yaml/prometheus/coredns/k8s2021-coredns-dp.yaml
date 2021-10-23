@@ -26,8 +26,8 @@ spec:
       serviceAccountName: coredns
       containers:
       - name: coredns
-#        image: harbor.qytanghost.com/public/coredns:v1.8.6
-        image: harbor.qytanghost.com/public/coredns:v1.6.1
+        image: harbor.qytanghost.com/public/coredns:v1.8.6
+#        image: harbor.qytanghost.com/public/coredns:v1.6.1
         args:
         - -conf
         - /etc/coredns/Corefile

@@ -25,9 +25,9 @@ cadvisor-vrjts   1/1     Running   0          45s   172.16.203.67   node03.qytan
 
 ###查看端口与测试(任何一个计算节点)
 
-[root@node01 ~]# curl 172.16.201.148:4194/healthz
+[root@node01 ~]# curl 172.16.203.67:4194/healthz
 ok
 
-[root@node01 ~]# curl 172.16.201.148:4194/metrics
+[root@node01 ~]# curl 172.16.203.67:4194/metrics
 
 ---忽略大量输出---

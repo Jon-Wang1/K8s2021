@@ -24,7 +24,7 @@ node-exporter-h5qj6   1/1     Running   0          57s   172.16.201.65   node01.
 ----------------------------------注意此处切换设备--------------------------------------
 
 ###查看端口与测试(任何一个计算节点)
-[root@node01 ~]# curl 172.16.201.145:9100
+[root@node01 ~]# curl 172.16.201.65:9100
 <html>
                         <head><title>Node Exporter</title></head>
                         <body>
@@ -34,6 +34,6 @@ node-exporter-h5qj6   1/1     Running   0          57s   172.16.201.65   node01.
                         </html>
 
 
-[root@node01 ~]# curl 172.16.201.145:9100/metrics
+[root@node01 ~]# curl 172.16.201.65:9100/metrics
 
 ---忽略大量输出---
