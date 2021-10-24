@@ -8,7 +8,7 @@ docker push harbor.qytanghost.com/monitoring/cadvisor:v0.42.0
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-###应用资源配置清单(任何一个Master)
+###应用资源配置清单(任何一个Master) [由于kubelet内置所有可以不用部署]
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/cadvisor/cadvisor-ds.yaml
 

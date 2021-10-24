@@ -198,8 +198,8 @@ groups:
 - name: record_rules
   rules:
   - expr: |
-      avg(label_replace(container_memory_rss{namespace="app",container!="POD",name=~".*nameko-.*"}, "nameko_app_name", "$1", "name", ".*_(nameko-[a-z]+)-.*")) by (nameko_app_name)
+      avg(label_replace(container_memory_rss{namespace="devops", container=~"nameko-.*"}, "nameko_app_name", "$1", "container", "(nameko-[a-z]+)")) by (nameko_app_name)
     record: nameko_app:cpu_rss
   - expr: |
-      sum(label_replace(rate(container_network_receive_bytes_total{namespace='app',name=~".*nameko-.*"}[5m]), "nameko_app_name", "$1", "name", ".*_(nameko-[a-z]+)-.*")) by (nameko_app_name)
+      sum(label_replace(rate(container_network_receive_bytes_total{namespace="devops",pod=~"nameko-.*"}[5m]), "nameko_app_name", "$1", "pod", "(nameko-[a-z]+)-.*")) by (nameko_app_name)
     record: nameko_app:receive_speed

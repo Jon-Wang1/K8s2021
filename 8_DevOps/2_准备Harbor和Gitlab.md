@@ -54,6 +54,12 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 ----------------------------------注意此处切换设备--------------------------------------
 
 ### 添加Runner到sudouser  (详细截图看PPT) (Gitlab)
+[root@gitlab ~]# visudo
+```shell
+## Allow root to run any commands anywhere
+root    ALL=(ALL)       ALL
+gitlab-runner   ALL=(ALL:ALL) NOPASSWD:ALL  # 添加内容
+```
 
 ----------------------------------注意此处切换设备--------------------------------------
 
@@ -102,6 +108,8 @@ ln -s /opt/kubernetes/client/bin/kubectl /usr/bin/kubectl
 ----------------------------------注意此处切换设备--------------------------------------
 
 ### 设置Gitlab 环境变量 (详细截图看PPT)（Gitlab图形界面）
+REGISTRY_PASSWORD	:	 Cisc0123 	
+REGISTRY_USERNAME	:	 admin
 
 ### 启动 nameko_microservice分支的Pipeline,并且查看CICD pipeline （Gitlab图形界面）
 
