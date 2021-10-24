@@ -54,6 +54,12 @@ Runner registered successfully. Feel free to start it, but if it's running alrea
 ----------------------------------注意此处切换设备--------------------------------------
 
 ### 添加Runner到sudouser  (详细截图看PPT) (Gitlab)
+[root@gitlab ~]# visudo
+```shell
+## Allow root to run any commands anywhere
+root    ALL=(ALL)       ALL
+gitlab-runner   ALL=(ALL:ALL) NOPASSWD:ALL  # 添加内容
+```
 
 ----------------------------------注意此处切换设备--------------------------------------
 
