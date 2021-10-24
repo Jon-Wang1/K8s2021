@@ -9,7 +9,7 @@ groups:
     annotations:
       summary: "{{ $labels.instance }} CPU usage above 85% (current value: {{ $value }}%)"
   - alert: hostMemUsageAlert
-    expr: (node_memory_MemTotal - node_memory_MemAvailable)/node_memory_MemTotal > 0.85
+    expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes)/node_memory_MemTotal_bytes > 0.85
     for: 5m
     labels:
       severity: warning
