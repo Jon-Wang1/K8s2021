@@ -108,6 +108,8 @@ ln -s /opt/kubernetes/client/bin/kubectl /usr/bin/kubectl
 ----------------------------------注意此处切换设备--------------------------------------
 
 ### 设置Gitlab 环境变量 (详细截图看PPT)（Gitlab图形界面）
+REGISTRY_PASSWORD	:	 Cisc0123 	
+REGISTRY_USERNAME	:	 admin
 
 ### 启动 nameko_microservice分支的Pipeline,并且查看CICD pipeline （Gitlab图形界面）
 
