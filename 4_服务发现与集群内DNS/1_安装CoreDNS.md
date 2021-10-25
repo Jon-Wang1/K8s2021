@@ -10,7 +10,7 @@ docker push harbor.qytanghost.com/public/coredns:v1.8.6
 
 ### 应用资源配置清单 (任何一个Master)
 
-### 资源配置清单参考 (任何一个Master)
+### 资源配置清单参考
 ### https://raw.githubusercontent.com/kubernetes/kubernetes/master/cluster/addons/dns/coredns/coredns.yaml.base
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/coredns/rbac.yaml
