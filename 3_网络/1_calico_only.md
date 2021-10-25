@@ -127,12 +127,6 @@ kubectl label nodes node03.qytanghost.com rack=3
 
 ```
 
-### 授权etcd-client kubelet-api-admin （etcd-client这个证书，用来和apiserver通信写入apiserver数据库）(任何一个Master)
-```shell
-kubectl create clusterrolebinding kube-apiserver:kubelet-apis --clusterrole=system:kubelet-api-admin --user etcd-client
-
-```
-
 ### 查看地址池(任何一个Master)
 ```shell
 kubectl exec -it calicoctl -n kube-system -- calicoctl get ippool -o wide

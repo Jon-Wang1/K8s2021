@@ -35,8 +35,7 @@ cd /opt/certs/
 cat >/opt/certs/etcd-client-csr.json <<EOF
 {
     "CN": "etcd-client",
-    "hosts": [
-    ],
+    "hosts": [],
     "key": {
         "algo": "rsa",
         "size": 2048
@@ -60,6 +59,32 @@ cfssl gencert -ca=ca.pem \
               -profile=client etcd-client-csr.json \
               |cfssl-json -bare etcd-client
 
+cat >/opt/certs/apiserver-kubelet-client-csr.json <<EOF
+{
+    "CN": "apiserver-kubelet-client",
+    "hosts": [],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "CN",
+            "ST": "beijing",
+            "L": "beijing",
+            "O": "system:masters",
+            "OU": "qytangk8s"
+        }
+    ]
+}
+EOF
+
+cfssl gencert -ca=ca.pem \
+              -ca-key=ca-key.pem \
+              -config=ca-config.json \
+              -profile=client apiserver-kubelet-client-csr.json \
+              |cfssl-json -bare apiserver-kubelet-client
+
 ```
 
 ### 查看etcd client证书
@@ -68,6 +93,11 @@ cfssl gencert -ca=ca.pem \
 -rw-r--r-- 1 root root  293 Oct  9 08:33 etcd-client-csr.json
 -rw------- 1 root root 1675 Oct  9 08:33 etcd-client-key.pem
 -rw-r--r-- 1 root root 1708 Oct  9 08:33 etcd-client.pem
+-rw-r--r-- 1 root root 1025 Oct 25 10:35 apiserver-kubelet-client.csr
+-rw-r--r-- 1 root root  299 Oct 25 10:35 apiserver-kubelet-client-csr.json
+-rw------- 1 root root 1675 Oct 25 10:35 apiserver-kubelet-client-key.pem
+-rw-r--r-- 1 root root 1724 Oct 25 10:35 apiserver-kubelet-client.pem
+
 
 ### 申请并颁发apiserver证书 (dnsca)
 ```shell
@@ -189,6 +219,8 @@ sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/kubernetes.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/ca.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/etcd-client-key.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/etcd-client.pem .
+sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/apiserver-kubelet-client-key.pem .
+sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/apiserver-kubelet-client.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/public.pem .
 sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/private.pem  .
 
@@ -203,14 +235,16 @@ sshpass -p "Cisc0123" scp dnsca.qytanghost.com:/opt/certs/private.pem  .
 /opt/kubernetes/server/cert
 
 [root@master01 cert]# ll
-total 28
--rw-r--r-- 1 root root 2000 Oct  9 08:39 ca.pem
--rw------- 1 root root 1675 Oct  9 08:39 etcd-client-key.pem
--rw-r--r-- 1 root root 1708 Oct  9 08:39 etcd-client.pem
--rw------- 1 root root 1679 Oct  9 08:39 kubernetes-key.pem
--rw-r--r-- 1 root root 2009 Oct  9 08:39 kubernetes.pem
--rw------- 1 root root 1679 Oct  9 08:39 private.pem
--rw-r--r-- 1 root root  451 Oct  9 08:39 public.pem
+total 36
+-rw------- 1 root root 1675 Oct 25 10:37 apiserver-kubelet-client-key.pem
+-rw-r--r-- 1 root root 1724 Oct 25 10:37 apiserver-kubelet-client.pem
+-rw-r--r-- 1 root root 2000 Oct 25 10:37 ca.pem
+-rw------- 1 root root 1675 Oct 25 10:37 etcd-client-key.pem
+-rw-r--r-- 1 root root 1708 Oct 25 10:37 etcd-client.pem
+-rw------- 1 root root 1679 Oct 25 10:37 kubernetes-key.pem
+-rw-r--r-- 1 root root 2009 Oct 25 10:37 kubernetes.pem
+-rw------- 1 root root 1679 Oct 25 10:37 private.pem
+-rw-r--r-- 1 root root  451 Oct 25 10:37 public.pem
 
 ### 官方实例
 https://kubernetes.io/zh/docs/tasks/debug-application-cluster/audit/
@@ -442,8 +476,8 @@ etcd_host_3=10.1.1.103
   --target-ram-mb=180 \
   --anonymous-auth=false \
   --kubelet-certificate-authority=/opt/kubernetes/server/cert/ca.pem \
-  --kubelet-client-certificate /opt/kubernetes/server/cert/etcd-client.pem \
-  --kubelet-client-key /opt/kubernetes/server/cert/etcd-client-key.pem \
+  --kubelet-client-certificate /opt/kubernetes/server/cert/apiserver-kubelet-client.pem \
+  --kubelet-client-key /opt/kubernetes/server/cert/apiserver-kubelet-client-key.pem \
   --kubelet-https=true \
   --kubelet-timeout=10s \
   --log-dir /data/logs/kubernetes/kube-apiserver \

@@ -335,6 +335,11 @@ node01.qytanghost.com   NotReady   <none>   2m3s   v1.20.11
 node02.qytanghost.com   NotReady   <none>   2m2s   v1.20.11
 node03.qytanghost.com   NotReady   <none>   2m5s   v1.20.11
 
+[root@master01 ~]# kubectl get node -o wide
+NAME                    STATUS     ROLES    AGE   VERSION    INTERNAL-IP   EXTERNAL-IP   OS-IMAGE          KERNEL-VERSION          CONTAINER-RUNTIME
+node01.qytanghost.com   NotReady   <none>   40s   v1.20.11   10.1.1.201    <none>        CentOS Stream 8   4.18.0-338.el8.x86_64   containerd://1.4.11
+node02.qytanghost.com   NotReady   <none>   40s   v1.20.11   10.1.1.202    <none>        CentOS Stream 8   4.18.0-338.el8.x86_64   containerd://1.4.11
+node03.qytanghost.com   NotReady   <none>   39s   v1.20.11   10.1.1.203    <none>        CentOS Stream 8   4.18.0-338.el8.x86_64   containerd://1.4.11
 
 ### 为node打标签 (任何一个Master)
 ```shell script
@@ -351,10 +356,16 @@ node01.qytanghost.com   NotReady   node    2m20s   v1.20.11
 node02.qytanghost.com   NotReady   node    2m19s   v1.20.11
 node03.qytanghost.com   NotReady   node    2m22s   v1.20.11
 
+[root@master01 ~]# kubectl get node -o wide
+NAME                    STATUS     ROLES   AGE   VERSION    INTERNAL-IP   EXTERNAL-IP   OS-IMAGE          KERNEL-VERSION          CONTAINER-RUNTIME
+node01.qytanghost.com   NotReady   node    73s   v1.20.11   10.1.1.201    <none>        CentOS Stream 8   4.18.0-338.el8.x86_64   containerd://1.4.11
+node02.qytanghost.com   NotReady   node    73s   v1.20.11   10.1.1.202    <none>        CentOS Stream 8   4.18.0-338.el8.x86_64   containerd://1.4.11
+node03.qytanghost.com   NotReady   node    72s   v1.20.11   10.1.1.203    <none>        CentOS Stream 8   4.18.0-338.el8.x86_64   containerd://1.4.11
 
 # 可以考虑为node打上master的label (任何一个Master)
 ```shell script
 kubectl label node node01.qytanghost.com node-role.kubernetes.io/master=
+
 ```
 
 ### 查看node状态 (任何一个Master)
@@ -367,6 +378,7 @@ node03.qytanghost.com   NotReady   node          4m46s   v1.20.11
 # 删除标签 (任何一个Master)
 ```shell script
 kubectl label node node01.qytanghost.com node-role.kubernetes.io/master-
+
 ```
 
 # 查看节点, 由于CNI还未安装的原因, 所以状态为未就绪 (任何一个Master)

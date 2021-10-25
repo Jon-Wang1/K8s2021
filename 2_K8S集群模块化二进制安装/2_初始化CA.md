@@ -45,7 +45,7 @@ cat >/opt/certs/ca-csr.json <<EOF
         }
     ],
     "ca": {
-        "expiry": "17520h"
+        "expiry": "175200h"
     }
 }
 EOF
@@ -133,7 +133,20 @@ EOF
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-### 下载根证书(gitlab, harbor, mgmtcentos, master01, master02, master03, node01, node02, node03)
+### 确认dnsca秘钥（全部主机）
+[root@dnsca certs]# ssh root@dnsca.qytanghost.com
+The authenticity of host 'dnsca.qytanghost.com (10.1.1.219)' can't be established.
+ECDSA key fingerprint is SHA256:jWlSzcu5QdgKgh19Haz/pXf4AfIwbt9cfzDERxuzwCs.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'dnsca.qytanghost.com,10.1.1.219' (ECDSA) to the list of known hosts.
+root@dnsca.qytanghost.com's password:
+Last login: Mon Oct 25 09:54:48 2021 from 10.1.1.201
+
+[root@dnsca ~]# exit  ### 注意注意注意！一定要退出
+logout
+
+
+### 下载根证书，更新受信任根证书颁发机构(全部主机)
 ```shell
 yum install -y epel-release
 yum install -y sshpass

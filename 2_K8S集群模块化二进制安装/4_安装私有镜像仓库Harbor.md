@@ -88,23 +88,6 @@ lrwxrwxrwx 1 root root  19 Oct  8 12:59 harbor -> /opt/harbor-v2.3.3/
 drwxr-xr-x 2 root root 122 Oct  8 12:58 harbor-v2.3.3
 drwxr-xr-x 2 root root  49 Oct  8 12:57 src
 
-----------------------------------注意此处切换设备--------------------------------------
-
-### 下载证书(harbor, gitlab, mgmtcentos, nginx01, nginx02, master01, master02, master03, node01, node02, node03)
-[root@harbor certs]# ssh root@dnsca.qytanghost.com
-The authenticity of host 'dnsca.qytanghost.com (10.1.1.219)' can't be established.
-ECDSA key fingerprint is SHA256:jWlSzcu5QdgKgh19Haz/pXf4AfIwbt9cfzDERxuzwCs.
-Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-Warning: Permanently added 'dnsca.qytanghost.com,10.1.1.219' (ECDSA) to the list of known hosts.
-root@dnsca.qytanghost.com's password:
-Last login: Fri Oct  8 09:08:32 2021 from 10.1.1.50
-
-###注意一定要退出
-[root@dnsca ~]# exit
-logout
-
-----------------------------------注意此处切换设备--------------------------------------
-
 ### 修改harbor配置文件(harbor)
 [root@localhost opt]# cd /opt/harbor
 [root@harbor harbor]# ll
@@ -137,7 +120,7 @@ docker run --rm -v $input_dir:/input \
 /opt/harbor/certs/harbor.pem
 /hostfs/harbor.pem
 
-# harbor.yml内的路径
+# harbor容器内的路径
 /harbor.pem
 
 ### 修改harbor.yml(harbor)
@@ -213,21 +196,21 @@ Login Succeeded
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-### harbor拉取镜像(harbor)
+### 拉取镜像(任何一个安装了Docker，并且docker login的设备)
 ```shell
 docker pull centos
 docker pull nginx
 
 ```
 
-### 修改镜像标签(harbor)
+### 修改镜像标签(任何一个安装了Docker，并且docker login的设备)
 ```shell
 docker tag centos harbor.qytanghost.com/public/centos
 docker tag nginx harbor.qytanghost.com/public/nginx
 
 ```
 
-### 推送镜像到私有仓库(harbor)
+### 推送镜像到私有仓库(任何一个安装了Docker，并且docker login的设备)
 ```shell
 docker push harbor.qytanghost.com/public/centos
 docker push harbor.qytanghost.com/public/nginx
@@ -236,7 +219,7 @@ docker push harbor.qytanghost.com/public/nginx
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-### 其他linux测试从私有仓库拉取镜像(gitlab, mgmtcentos, master01, master02, master03, node01, node02, node03)
+### 测试从私有仓库拉取镜像(任何一个安装了Docker，并且docker login的设备)
 ```shell
 docker pull harbor.qytanghost.com/public/centos
 docker pull harbor.qytanghost.com/public/nginx
