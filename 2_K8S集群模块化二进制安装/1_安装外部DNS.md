@@ -178,5 +178,5 @@ vim /etc/sysconfig/network-scripts/ifcfg-ens192
 DNS1=10.1.1.219
 DOMAIN=qytanghost.com
 
-### 设置主机名
+### 设置主机名(所有主机)
 hostnamectl set-hostname xxx.qytanghost.com

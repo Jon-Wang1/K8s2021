@@ -53,7 +53,7 @@ https://kubernetes.io/docs/setup/production-environment/container-runtimes/
 
 ### 安装docker的时候已经安装了containerd.io
 
-### 系统准备 (所有计算节点)
+### 系统准备 (node01, node02, node03)
 ```shell
 cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
 overlay
@@ -75,14 +75,14 @@ sudo sysctl --system
 
 ```
 
-### 产生配置文件  (所有计算节点)
+### 产生配置文件  (node01, node02, node03)
 ```shell
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
 
 ```
 
-### 修改配置文件“/etc/containerd/config.toml” (所有计算节点)
+### 修改配置文件“/etc/containerd/config.toml” (node01, node02, node03)
 vim /etc/containerd/config.toml
 
 [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
@@ -91,7 +91,7 @@ vim /etc/containerd/config.toml
     SystemdCgroup = true # 添加此内容
 
 
-### 加载并启动服务 
+### 加载并启动服务 (node01, node02, node03)
 ```shell
 systemctl enable containerd
 systemctl restart containerd
