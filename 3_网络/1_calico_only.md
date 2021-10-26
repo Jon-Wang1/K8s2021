@@ -65,7 +65,7 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/calico/custom-resources.yaml
 
 ### 可以使用如下命令，监控pod创建进程
 ```shell
-watch kubectl get pods -n calico-system
+watch kubectl get pods -n calico-system -o wide
 
 ```
 
@@ -107,6 +107,7 @@ calico-apiserver-6bb8d7579f-dc8s7   1/1     Running   0          8m11s
 #### 确认秘钥(node01, node02, node03)
 ```shell
 ssh root@master01.qytanghost.com
+
 ```
 注意:一定要退出
 
