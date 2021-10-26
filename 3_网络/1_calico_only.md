@@ -113,7 +113,7 @@ ssh root@master01.qytanghost.com
 
 #### 下载kube.config(node01, node02, node03)
 ```shell
-mkdir .kube
+mkdir ~/.kube
 cd ~/.kube/
 sshpass -p "Cisc0123" scp master01.qytanghost.com:~/.kube/config .
 
