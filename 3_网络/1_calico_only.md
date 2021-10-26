@@ -63,13 +63,6 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/calico/custom-resources.yaml
 
 ```
 
-### 应用资源配置清单,安装calicoctl(任何一个Master)
-#### https://docs.projectcalico.org/getting-started/clis/calicoctl/install
-```shell script
-kubectl apply -f http://mgmtcentos.qytanghost.com/calico/calicoctl.yaml
-
-```
-
 ### 可以使用如下命令，监控pod创建进程
 ```shell
 watch kubectl get pods -n calico-system
@@ -110,12 +103,31 @@ calico-typha-658c5d57d-xvgkh               1/1     Running   0          10m
 NAME                                READY   STATUS    RESTARTS   AGE
 calico-apiserver-6bb8d7579f-dc8s7   1/1     Running   0          8m11s
 
+### 安装calicoctl (node01, node02, node03)
+#### 确认秘钥(node01, node02, node03)
+```shell
+ssh root@master01.qytanghost.com
+```
+注意:一定要退出
 
-### 查看位于kube-system中的calicoctl(任何一个Master)
-[root@master01 ~]# kubectl get pod -n kube-system
-NAME        READY   STATUS    RESTARTS   AGE
-calicoctl   1/1     Running   0          4m34s
+#### 下载kube.config(node01, node02, node03)
+```shell
+mkdir .kube
+cd ~/.kube/
+sshpass -p "Cisc0123" scp master01.qytanghost.com:~/.kube/config .
 
+```
+
+#### 下载calicoctl
+```shell
+curl -O -L  https://github.com/projectcalico/calicoctl/releases/download/v3.20.2/calicoctl
+chmod +x calicoctl
+export DATASTORE_TYPE=kubernetes
+export KUBECONFIG=~/.kube/config
+
+./calicoctl get node
+
+```
 
 ## 如果希望预留地址(推荐)(任何一个Master)
 
@@ -127,34 +139,34 @@ kubectl label nodes node03.qytanghost.com rack=3
 
 ```
 
-### 查看地址池(任何一个Master)
+### 查看地址池(任何一个Node)
 ```shell
-kubectl exec -it calicoctl -n kube-system -- calicoctl get ippool -o wide
+./calicoctl get ippool -o wide
 
 ```
-### 删除默认的地址池(任何一个Master)
+### 删除默认的地址池(任何一个Node)
 ```shell
-kubectl exec -it calicoctl -n kube-system -- calicoctl delete ippools default-ipv4-ippool
+./calicoctl delete ippools default-ipv4-ippool
 
 ```
 
-### 下载资源配置清单(任何一个Master)
+### 下载资源配置清单(任何一个Node)
 ```shell
 wget http://mgmtcentos.qytanghost.com/calico/node01.yaml
 wget http://mgmtcentos.qytanghost.com/calico/node02.yaml
 wget http://mgmtcentos.qytanghost.com/calico/node03.yaml
 
 ```
-### 应用资源配置清单(任何一个Master)
+### 应用资源配置清单(任何一个Node)
 ```shell
-kubectl exec -it calicoctl -n kube-system -- calicoctl create -f - < node01.yaml
-kubectl exec -it calicoctl -n kube-system -- calicoctl create -f - < node02.yaml
-kubectl exec -it calicoctl -n kube-system -- calicoctl create -f - < node03.yaml
+./calicoctl create -f - < node01.yaml
+./calicoctl create -f - < node02.yaml
+./calicoctl create -f - < node03.yaml
 
 ```
 
-### 查看地址池(任何一个Master)
-[root@master01 ~]# kubectl exec -it calicoctl -n kube-system -- calicoctl get ippool -o wide
+### 查看地址池(任何一个Node)
+[root@node01 ~]# ./calicoctl get ippool -o wide
 NAME            CIDR              NAT    IPIPMODE   VXLANMODE   DISABLED   SELECTOR
 rack-1-ippool   172.16.201.0/24   true   Never      Always      false      rack == "1"
 rack-2-ippool   172.16.202.0/24   true   Never      Always      false      rack == "2"
@@ -166,3 +178,137 @@ NAME                    STATUS   ROLES   AGE   VERSION
 node01.qytanghost.com   Ready    node    75m   v1.20.11
 node02.qytanghost.com   Ready    node    75m   v1.20.11
 node03.qytanghost.com   Ready    node    75m   v1.20.11
+
+### 默认BGP是full mesh状态(任何一个Node)
+[root@node01 .kube]# ./calicoctl node status
+Calico process is running.
+
+IPv4 BGP status
++--------------+-------------------+-------+----------+-------------+
+| PEER ADDRESS |     PEER TYPE     | STATE |  SINCE   |    INFO     |
++--------------+-------------------+-------+----------+-------------+
+| 10.1.1.202   | node-to-node mesh | up    | 06:53:20 | Established |
+| 10.1.1.203   | node-to-node mesh | up    | 06:53:29 | Established |
++--------------+-------------------+-------+----------+-------------+
+
+IPv6 BGP status
+No IPv6 peers found.
+
+### 思科路由器BGP配置(CSR)
+```shell
+router bgp 63400
+ bgp log-neighbor-changes
+ bgp listen range 10.1.1.0/24 peer-group calico
+ neighbor calico peer-group
+ neighbor calico remote-as 63400
+ neighbor calico route-reflector-client
+
+```
+
+### 切换到路由反射器(任何一个Node)
+```shell
+rm -f bgp-config-off-mesh.yaml
+wget http://mgmtcentos.qytanghost.com/calico/bgp-config-off-mesh.yaml
+./calicoctl apply -f - < bgp-config-off-mesh.yaml
+
+rm -f node01-bgp.yaml
+rm -f node02-bgp.yaml
+rm -f node02-bgp.yaml
+
+wget http://mgmtcentos.qytanghost.com/calico/node01-bgp.yaml
+wget http://mgmtcentos.qytanghost.com/calico/node02-bgp.yaml
+wget http://mgmtcentos.qytanghost.com/calico/node03-bgp.yaml
+
+./calicoctl apply -f - < node01-bgp.yaml
+./calicoctl apply -f - < node02-bgp.yaml
+./calicoctl apply -f - < node03-bgp.yaml
+
+```
+
+### 查看节点BGP状态(任何一个Node)
+[root@node01 ~]# ./calicoctl node status
+Calico process is running.
+
+IPv4 BGP status
++--------------+---------------+-------+----------+-------------+
+| PEER ADDRESS |   PEER TYPE   | STATE |  SINCE   |    INFO     |
++--------------+---------------+-------+----------+-------------+
+| 10.1.1.16    | node specific | up    | 07:00:01 | Established |
++--------------+---------------+-------+----------+-------------+
+
+IPv6 BGP status
+No IPv6 peers found.
+
+[root@node02 .kube]# ./calicoctl node status
+Calico process is running.
+
+
+IPv4 BGP status
++--------------+---------------+-------+----------+-------------+
+| PEER ADDRESS |   PEER TYPE   | STATE |  SINCE   |    INFO     |
++--------------+---------------+-------+----------+-------------+
+| 10.1.1.16    | node specific | up    | 07:00:00 | Established |
++--------------+---------------+-------+----------+-------------+
+
+IPv6 BGP status
+No IPv6 peers found.
+
+[root@node03 .kube]# ./calicoctl node status
+Calico process is running.
+
+IPv4 BGP status
++--------------+---------------+-------+----------+-------------+
+| PEER ADDRESS |   PEER TYPE   | STATE |  SINCE   |    INFO     |
++--------------+---------------+-------+----------+-------------+
+| 10.1.1.16    | node specific | up    | 07:00:00 | Established |
++--------------+---------------+-------+----------+-------------+
+
+IPv6 BGP status
+No IPv6 peers found.
+
+###路由器上查看邻居(CSR)
+CSR1#show ip bgp summary
+BGP router identifier 10.1.1.16, local AS number 63400
+BGP table version is 4, main routing table version 4
+3 network entries using 744 bytes of memory
+3 path entries using 408 bytes of memory
+1/1 BGP path/bestpath attribute entries using 288 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+BGP using 1440 total bytes of memory
+BGP activity 3/0 prefixes, 9/6 paths, scan interval 60 secs
+3 networks peaked at 07:00:01 Oct 26 2021 UTC (00:16:34.683 ago)
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+*10.1.1.201     4        63400      27      25        4    0    0 00:16:34        1
+*10.1.1.202     4        63400      26      28        4    0    0 00:16:33        1
+*10.1.1.203     4        63400      26      25        4    0    0 00:16:34        1
+* Dynamically created based on a listen range command
+Dynamically created neighbors: 3, Subnet ranges: 1
+
+BGP peergroup calico listen range group members:
+  10.1.1.0/24
+
+
+Total dynamically created neighbors: 3/(100 max), Subnet ranges: 1
+
+###路由器上查看路由(CSR)
+CSR1#show ip route bgp
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, m - OMP
+       n - NAT, Ni - NAT inside, No - NAT outside, Nd - NAT DIA
+       i - IS-IS, su - IS-IS summary, L1 - IS-IS level-1, L2 - IS-IS level-2
+       ia - IS-IS inter area, * - candidate default, U - per-user static route
+       H - NHRP, G - NHRP registered, g - NHRP registration summary
+       o - ODR, P - periodic downloaded static route, l - LISP
+       a - application route
+       + - replicated route, % - next hop override, p - overrides from PfR
+
+Gateway of last resort is not set
+
+      172.16.0.0/24 is subnetted, 3 subnets
+B        172.16.201.0 [200/0] via 10.1.1.201, 00:17:15
+B        172.16.202.0 [200/0] via 10.1.1.202, 00:17:15
+B        172.16.203.0 [200/0] via 10.1.1.203, 00:17:15
