@@ -52,13 +52,17 @@ cat >/opt/certs/etcd-client-csr.json <<EOF
 }
 EOF
 
-cd /opt/certs/
 cfssl gencert -ca=ca.pem \
               -ca-key=ca-key.pem \
               -config=ca-config.json \
               -profile=client etcd-client-csr.json \
               |cfssl-json -bare etcd-client
 
+```
+
+### 申请并颁发kubelet client证书 (dnsca)
+```shell
+cd /opt/certs/
 cat >/opt/certs/apiserver-kubelet-client-csr.json <<EOF
 {
     "CN": "apiserver-kubelet-client",
@@ -86,18 +90,6 @@ cfssl gencert -ca=ca.pem \
               |cfssl-json -bare apiserver-kubelet-client
 
 ```
-
-### 查看etcd client证书
-[root@localhost certs]# ll
--rw-r--r-- 1 root root 1009 Oct  9 08:33 etcd-client.csr
--rw-r--r-- 1 root root  293 Oct  9 08:33 etcd-client-csr.json
--rw------- 1 root root 1675 Oct  9 08:33 etcd-client-key.pem
--rw-r--r-- 1 root root 1708 Oct  9 08:33 etcd-client.pem
--rw-r--r-- 1 root root 1025 Oct 25 10:35 apiserver-kubelet-client.csr
--rw-r--r-- 1 root root  299 Oct 25 10:35 apiserver-kubelet-client-csr.json
--rw------- 1 root root 1675 Oct 25 10:35 apiserver-kubelet-client-key.pem
--rw-r--r-- 1 root root 1724 Oct 25 10:35 apiserver-kubelet-client.pem
-
 
 ### 申请并颁发apiserver证书 (dnsca)
 ```shell
@@ -145,10 +137,24 @@ cfssl gencert -ca=ca.pem \
 
 ### 查看apiserver证书 (dnsca)
 [root@localhost certs]# ll
--rw-r--r-- 1 root root 1330 Oct  9 08:35 kubernetes.csr
--rw-r--r-- 1 root root  649 Oct  9 08:35 kubernetes-csr.json
--rw------- 1 root root 1679 Oct  9 08:35 kubernetes-key.pem
--rw-r--r-- 1 root root 2009 Oct  9 08:35 kubernetes.pem
+[root@dnsca certs]# ll
+total 104
+-rw-r--r-- 1 root root 1041 Oct 26 10:26 apiserver-kubelet-client.csr
+-rw-r--r-- 1 root root  309 Oct 26 10:26 apiserver-kubelet-client-csr.json
+-rw------- 1 root root 1679 Oct 26 10:26 apiserver-kubelet-client-key.pem
+-rw-r--r-- 1 root root 1740 Oct 26 10:26 apiserver-kubelet-client.pem
+
+-rw-r--r-- 1 root root 1009 Oct 26 10:26 etcd-client.csr
+-rw-r--r-- 1 root root  288 Oct 26 10:26 etcd-client-csr.json
+-rw------- 1 root root 1675 Oct 26 10:26 etcd-client-key.pem
+-rw-r--r-- 1 root root 1708 Oct 26 10:26 etcd-client.pem
+
+-rw-r--r-- 1 root root 1330 Oct 26 10:27 kubernetes.csr
+-rw-r--r-- 1 root root  649 Oct 26 10:27 kubernetes-csr.json
+-rw------- 1 root root 1679 Oct 26 10:27 kubernetes-key.pem
+-rw-r--r-- 1 root root 2009 Oct 26 10:27 kubernetes.pem
+
+
 
 ### 申请并颁发metrics-server证书 (dnsca)[由于API server没有安装网络,无法和metric server通讯所以无需安装]
 ```shell
