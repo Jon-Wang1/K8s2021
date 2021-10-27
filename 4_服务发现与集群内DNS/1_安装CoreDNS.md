@@ -210,7 +210,7 @@ TCP  192.168.0.1:443 rr
 # codedns的service      
 TCP  192.168.0.2:53 rr
   -> 172.16.202.3:53              Masq    1      0          0  
-# codedns的service      
+# codedns metrics 的service      
 TCP  192.168.0.2:9153 rr
   -> 172.16.202.3:9153            Masq    1      0          0  
 # qyt-lb-ds的service      
