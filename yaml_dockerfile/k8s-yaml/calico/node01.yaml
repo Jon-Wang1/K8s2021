@@ -5,8 +5,8 @@ metadata:
 spec:
   cidr: 172.16.201.0/24
   blockSize: 24
-  vxlanMode: Always
-#  vxlanMode: CrossSubnet
+#  vxlanMode: Always
+  vxlanMode: CrossSubnet
 #  ipipMode: CrossSubnet
   natOutgoing: true
   nodeSelector: rack == "1"
