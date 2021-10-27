@@ -20,6 +20,25 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/coredns/svc.yaml
 
 ```
 
+### 查看dp.yaml中使用sa(coredns)的部分
+---忽略其他---
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: coredns
+  template:
+    metadata:
+      labels:
+        k8s-app: coredns
+    spec:
+      priorityClassName: system-cluster-critical
+      serviceAccountName: coredns # 这个位置
+      containers:
+      - name: coredns
+        image: harbor.qytanghost.com/public/coredns:v1.8.6
+---忽略其他---
+
 ## 查看状态 (任何一个Master)
 ### 查看deployment(任何Master)
 [root@master01 ~]# kubectl get deploy -n kube-system -o wide
@@ -76,10 +95,53 @@ Events:  <none>
 NAME                                 SECRETS   AGE
 coredns                              1         28m
 
+### 查看rbac.yaml中创建SA(coredns)的部分
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: coredns
+  namespace: kube-system
+  labels:
+      kubernetes.io/cluster-service: "true"
+      addonmanager.kubernetes.io/mode: Reconcile
+
 ### 查看ClusterRoles(任何Master)
 [root@master01 ~]# kubectl get clusterroles system:coredns
 NAME             CREATED AT
 system:coredns   2021-10-09T08:05:30Z
+
+### 查看rbac.yaml中创建ClusterRole(system:coredns)的部分
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+    addonmanager.kubernetes.io/mode: Reconcile
+  name: system:coredns
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  - services
+  - pods
+  - namespaces
+  verbs:
+  - list
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - nodes
+  verbs:
+  - get
+- apiGroups:
+  - discovery.k8s.io
+  resources:
+  - endpointslices
+  verbs:
+  - list
+  - watch
 
 ### 查看ClusterRolebinding(任何Master)
 [root@master01 ~]# kubectl get clusterrolebinding system:coredns
@@ -100,6 +162,25 @@ Subjects:
   ----            ----     ---------
   ServiceAccount  coredns  kube-system
 
+### 查看rbac.yaml中创建ClusterRoleBinding(system:coredns)的部分
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+    addonmanager.kubernetes.io/mode: EnsureExists
+  name: system:coredns
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:coredns
+subjects:
+- kind: ServiceAccount
+  name: coredns
+  namespace: kube-system
+  
 ### 应用nginx-curl-dp和nginx-curl-ds的service资源配置清单 (任何Master)
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/qyt-lb/svc-dp.yaml
