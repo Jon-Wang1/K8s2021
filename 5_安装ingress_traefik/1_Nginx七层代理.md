@@ -180,7 +180,7 @@ EOF
 
 ### 配置NGINX qytang.com.conf(Nginx01, Nginx02)
 ```shell script
-cat > /etc/nginx/conf.d/qytang.com.conf <<'EOF'
+cat > /etc/nginx/conf.d/qytangk8s.com.conf <<'EOF'
 upstream default_backend_traefik {
     server 10.1.1.201:6868    max_fails=3 fail_timeout=10s;
     server 10.1.1.202:6868    max_fails=3 fail_timeout=10s;
