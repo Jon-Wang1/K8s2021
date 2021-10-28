@@ -14,7 +14,7 @@
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-###Gitlab查看两个分支(详细截图看PPT) （Gitlab图形界面）
+###Gitlab查看三个分支(详细截图看PPT) （Gitlab图形界面）
 
 ----------------------------------注意此处切换设备--------------------------------------
 
@@ -71,21 +71,6 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/nameko_harbor_secret/harbor_se
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-###拷贝kubeconfig到Gitlab
-#### Gitlab创建目录 (Gitlab)
-[root@gitlab ~]# mkdir /etc/deploy
-
-----------------------------------注意此处切换设备--------------------------------------
-
-#### Mastor01 拷贝kubeconfig到gitlab (Master01)
-[root@master01 ~]# scp /root/.kube/config root@gitlab.qytanghost.com:/etc/deploy/config
-
-----------------------------------注意此处切换设备--------------------------------------
-
-#### 让gitlab-runner成为config文件的拥有者 (Gitlab)
-[root@gitlab ~]# chown gitlab-runner /etc/deploy/config
-
-
 ### 二进制安装kubectl (Gitlab)
 #### 查看版本
 https://github.com/kubernetes/kubernetes/tags
@@ -110,6 +95,9 @@ ln -s /opt/kubernetes/client/bin/kubectl /usr/bin/kubectl
 ### 设置Gitlab 环境变量 (详细截图看PPT)（Gitlab图形界面）
 REGISTRY_PASSWORD	:	 Cisc0123 	
 REGISTRY_USERNAME	:	 admin
+kube_config         :    echo $(cat ~/.kube/config | base64) | tr -d " "
+
+### 配置三个分支都为Protected branch (详细截图看PPT)（Gitlab图形界面）
 
 ### 启动 nameko_microservice分支的Pipeline,并且查看CICD pipeline （Gitlab图形界面）
 
@@ -119,6 +107,17 @@ REGISTRY_USERNAME	:	 admin
 [root@master01 ~]# kubectl get pod -l "app=nameko-microservice" -n devops
 NAME                                   READY   STATUS    RESTARTS   AGE
 nameko-microservice-7486c445fb-mwpgz   1/1     Running   0          2m32s
+
+----------------------------------注意此处切换设备--------------------------------------
+
+### 启动 metrics_microservice分支的Pipeline,并且查看CICD pipeline （Gitlab图形界面）
+
+----------------------------------注意此处切换设备--------------------------------------
+
+### 查看metrics_microservice pod （任何一个Master）
+[root@master01 ~]# kubectl get pod -l "app=metrics-mservice" -n devops
+NAME                              READY   STATUS    RESTARTS   AGE
+metrics-mservice-ccb4486d-qhgbw   1/1     Running   0          56s
 
 ----------------------------------注意此处切换设备--------------------------------------
 
