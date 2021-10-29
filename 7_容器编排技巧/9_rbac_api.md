@@ -81,11 +81,17 @@ volumeattachments                                   storage.k8s.io              
 
 ### 查看特定的api资源 （任何一个Master）
 [root@master02 ~]# kubectl api-resources -o wide | grep -i pods
-pods                              po                                               true         Pod                              [create delete deletecollection get list patch update watch]
-podsecuritypolicies               psp               policy                         false        PodSecurityPolicy                [create delete deletecollection get list patch update watch]
+NAME                              SHORTNAMES        APIGROUP                       NAMESPACED   KIND                             VERBS
+pods                              po                v1                             true         Pod                              [create delete deletecollection get list patch update watch]
+podsecuritypolicies               psp               policy/v1beta1                 false        PodSecurityPolicy                [create delete deletecollection get list patch update watch]
 
 [root@master02 ~]# kubectl api-resources -o wide | grep -i deployment
-deployments                       deploy            apps                           true         Deployment                       [create delete deletecollection get list patch update watch]
+NAME                              SHORTNAMES        APIGROUP                       NAMESPACED   KIND                             VERBS
+deployments                       deploy            apps/v1                        true         Deployment                       [create delete deletecollection get list patch update watch]
+
+[root@master01 ~]# kubectl api-resources -o wide | grep -i services
+NAME                              SHORTNAMES        APIGROUP                       NAMESPACED   KIND                             VERBS
+services                          svc               v1                             true         Service                          [create delete get list patch update watch]
 
 ### api实例 （任何一个Master）
 https://github.com/kubernetes-client/python/tree/master/examples

@@ -22,7 +22,6 @@ spec:
         - containerPort: 80 # 只是一个信息, 类似于Dockerfile的EXPOSE
       volumes:
         - name: emptydir
-#          emptyDir:
-#            medium: "Memory"
           emptyDir:
+#            medium: "Memory"
             sizeLimit: "300Mi"

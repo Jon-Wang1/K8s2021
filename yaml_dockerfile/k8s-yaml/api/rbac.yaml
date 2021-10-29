@@ -10,22 +10,22 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: api-author
 rules:
-- apiGroups: [""]
+- apiGroups: ["v1"]
   resources: ["pods"]
   verbs:
     - list
     - get
     - watch
     - create
-- apiGroups: [""]
+- apiGroups: ["v1"]
   resources: ["pods/log"]
   verbs:
     - get
-- apiGroups: [""]
+- apiGroups: ["v1"]
   resources: ["services"]
   verbs:
     - create
-- apiGroups: ["apps"]
+- apiGroups: ["apps/v1"]
   resources: ["deployments"]
   verbs:
     - create
