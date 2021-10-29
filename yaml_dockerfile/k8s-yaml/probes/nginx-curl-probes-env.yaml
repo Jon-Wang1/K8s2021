@@ -18,11 +18,11 @@ spec:
         imagePullPolicy: Always
         env:
         - name: startup_delay
-          value: "10"
+          value: "80"
         - name: readiness_time
-          value: "50"
+          value: "160"
         - name: liveliness_time
-          value: "100"
+          value: "240"
         ports:
         - containerPort: 8000
         startupProbe:

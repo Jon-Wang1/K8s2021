@@ -26,5 +26,5 @@ RUN chmod +x app.py
 
 ENV startup_delay=10 readiness_time=50 liveliness_time=100
 
-# 启动Nginx
-CMD sh -c "/qytang/app.py -s $startup_delay -r $readiness_time -l $liveliness_time"
+# 启动脚本
+CMD ["/qytang/app.py"]

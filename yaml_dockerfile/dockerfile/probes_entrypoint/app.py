@@ -19,6 +19,7 @@ parse_args = parser.parse_args()
 
 node = Flask(__name__)
 
+startup_delay = int(parse_args.startup_delay)
 liveliness_time = int(parse_args.liveliness_time)
 readiness_time = int(parse_args.readiness_time)
 startup_time = datetime.now()
@@ -33,8 +34,8 @@ def index():
 @node.route('/startup', methods=['GET'])
 def startup():
     now_time = datetime.now()
-    if (now_time - startup_time).seconds > int(parse_args.startup_delay):
-        return f"qytang startup {int(parse_args.startup_delay)}"
+    if (now_time - startup_time).seconds > startup_delay:
+        return f"qytang startup {startup_delay}"
     else:
         time.sleep(5)  # 制造超时
 

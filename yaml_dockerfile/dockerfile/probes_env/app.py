@@ -10,17 +10,13 @@ from flask import Flask, abort
 import time
 import argparse
 from datetime import datetime
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--startup_delay", "-s", dest="startup_delay", help="startup delay", type=int, default=10)
-parser.add_argument("--readiness_time",  "-r", dest="readiness_time", help="readiness time", type=int, default=50)
-parser.add_argument("--liveliness_time", "-l", dest="liveliness_time", help="liveliness time", type=int, default=100)
-parse_args = parser.parse_args()
+import os
 
 node = Flask(__name__)
 
-liveliness_time = int(parse_args.liveliness_time)
-readiness_time = int(parse_args.readiness_time)
+startup_delay = int(os.environ['startup_delay'])
+liveliness_time = int(os.environ['liveliness_time'])
+readiness_time = int(os.environ['readiness_time'])
 startup_time = datetime.now()
 
 
@@ -33,8 +29,8 @@ def index():
 @node.route('/startup', methods=['GET'])
 def startup():
     now_time = datetime.now()
-    if (now_time - startup_time).seconds > int(parse_args.startup_delay):
-        return f"qytang startup {int(parse_args.startup_delay)}"
+    if (now_time - startup_time).seconds > startup_delay:
+        return f"qytang startup {startup_delay}"
     else:
         time.sleep(5)  # 制造超时
 
