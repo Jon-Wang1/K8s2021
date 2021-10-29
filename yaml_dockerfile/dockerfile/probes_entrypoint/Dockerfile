@@ -24,5 +24,5 @@ RUN dos2unix app.py
 # 添加执行权限
 RUN chmod +x app.py
 
-# 启动Nginx
+# 启动脚本
 ENTRYPOINT ["/qytang/app.py"]
