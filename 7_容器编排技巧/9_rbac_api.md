@@ -93,6 +93,10 @@ deployments                       deploy            apps/v1                     
 NAME                              SHORTNAMES        APIGROUP                       NAMESPACED   KIND                             VERBS
 services                          svc               v1                             true         Service                          [create delete get list patch update watch]
 
+[root@master01 ~]# kubectl api-resources -o wide | grep -i traefik
+NAME                              SHORTNAMES        APIGROUP                       NAMESPACED   KIND                             VERBS
+ingressroutes                                       traefik.containo.us/v1alpha1   true         IngressRoute                     [delete deletecollection get list patch create update watch]
+
 ### api实例 （任何一个Master）
 https://github.com/kubernetes-client/python/tree/master/examples
 
