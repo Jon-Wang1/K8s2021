@@ -4,6 +4,10 @@ docker pull kibana:7.14.2
 docker tag kibana:7.14.2 harbor.qytanghost.com/efk/kibana:7.14.2
 docker push harbor.qytanghost.com/efk/kibana:7.14.2
 
+docker pull kibana:6.8.13
+docker tag kibana:6.8.13 harbor.qytanghost.com/efk/kibana:6.8.13
+docker push harbor.qytanghost.com/efk/kibana:6.8.13
+
 ```
 
 ----------------------------------注意此处切换设备--------------------------------------

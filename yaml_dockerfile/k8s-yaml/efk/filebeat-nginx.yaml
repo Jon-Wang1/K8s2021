@@ -39,7 +39,8 @@ spec:
           - name: logdir
             mountPath: /var/log/nginx
       - name: filebeat
-        image: harbor.qytanghost.com/efk/qyt-filebeat:7.14.2
+#        image: harbor.qytanghost.com/efk/qyt-filebeat:7.14.2
+        image: harbor.qytanghost.com/efk/qyt-filebeat:6.8.13
         imagePullPolicy: Always
         volumeMounts:
         - mountPath: /logdir

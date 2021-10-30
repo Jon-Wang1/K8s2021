@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
       - name: kibana
-        image: harbor.qytanghost.com/efk/kibana:7.14.2
+#        image: harbor.qytanghost.com/efk/kibana:7.14.2
+        image: harbor.qytanghost.com/efk/kibana:6.8.13
         resources:
           requests:
             cpu: "2000m"

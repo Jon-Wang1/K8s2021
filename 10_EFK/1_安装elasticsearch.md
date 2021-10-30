@@ -22,6 +22,10 @@ docker pull elasticsearch:7.14.2
 docker tag elasticsearch:7.14.2 harbor.qytanghost.com/efk/elasticsearch:7.14.2
 docker push harbor.qytanghost.com/efk/elasticsearch:7.14.2
 
+docker pull elasticsearch:6.8.13
+docker tag elasticsearch:6.8.13 harbor.qytanghost.com/efk/elasticsearch:6.8.13
+docker push harbor.qytanghost.com/efk/elasticsearch:6.8.13
+
 ```
 
 ----------------------------------注意此处切换设备--------------------------------------

@@ -1,4 +1,4 @@
-FROM harbor.qytanghost.com/efk/filebeat:7.14.2
+FROM harbor.qytanghost.com/efk/filebeat:6.8.13
 USER root
 RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
     echo 'Asia/Shanghai' >/etc/timezone
