@@ -28,6 +28,11 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/kube-state-metrics/
 
 ```
 
+### 如何得到资源配置清单
+https://github.com/kubernetes/kube-state-metrics
+搜索"manifest", 就能找到如下链接
+https://github.com/kubernetes/kube-state-metrics/tree/master/examples/standard
+
 ### 查看pod状况(任何一个Master)
 [root@master01 ~]# kubectl get pod -l "app.kubernetes.io/name=kube-state-metrics" -n monitoring -o wide
 NAME                                 READY   STATUS    RESTARTS   AGE   IP              NODE                    NOMINATED NODE   READINESS GATES
