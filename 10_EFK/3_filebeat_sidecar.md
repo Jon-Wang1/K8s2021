@@ -23,6 +23,8 @@ docker push harbor.qytanghost.com/efk/filebeat:6.8.13
 cd /K8S2021/yaml_dockerfile/dockerfile/filebeat/
 docker build -t harbor.qytanghost.com/efk/qyt-filebeat:6.8.13 .
 docker push harbor.qytanghost.com/efk/qyt-filebeat:6.8.13
+#docker build -t harbor.qytanghost.com/efk/qyt-filebeat:7.14.2 .
+#docker push harbor.qytanghost.com/efk/qyt-filebeat:7.14.2
 
 ```
 
