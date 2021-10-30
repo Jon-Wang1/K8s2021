@@ -83,21 +83,21 @@ Address: 172.16.203.101
 Name:   mongo.default.svc.cluster.local
 Address: 172.16.203.100
 
-> mongo-0.mongo.default.svc.cluster.local
+> mongo-0.mongo
 Server:         192.168.0.2
 Address:        192.168.0.2#53
 
 Name:   mongo-0.mongo.default.svc.cluster.local
 Address: 172.16.203.99
 
-> mongo-1.mongo.default.svc.cluster.local
+> mongo-1.mongo
 Server:         192.168.0.2
 Address:        192.168.0.2#53
 
-Name:   mongo-1.mongo.default.svc.cluster.local
+Name:   mongo-1.mongo
 Address: 172.16.203.100
 
-> mongo-2.mongo.default.svc.cluster.local
+> mongo-2.mongo
 Server:         192.168.0.2
 Address:        192.168.0.2#53
 
