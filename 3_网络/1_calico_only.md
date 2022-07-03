@@ -126,7 +126,7 @@ sshpass -p "Cisc0123" scp master01.qytanghost.com:~/.kube/config .
 
 ```
 
-#### 下载calicoctl
+#### 下载calicoctl(node01, node02, node03)
 ```shell
 curl -O -L  https://github.com/projectcalico/calicoctl/releases/download/v3.20.2/calicoctl
 chmod +x calicoctl

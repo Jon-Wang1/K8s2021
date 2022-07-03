@@ -33,7 +33,7 @@ systemctl enable docker
 
 ```
 
-###安装docker-compose (harbor, mgmtcentos, gitlab, master01, master02, master03, node01, node02, node03)
+### 安装docker-compose (harbor, mgmtcentos, gitlab, master01, master02, master03, node01, node02, node03)
 ```shell
 下载docker-compose:
 curl -L "https://get.daocloud.io/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
@@ -81,14 +81,18 @@ sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
 
 ```
+### 修改配置文件“/etc/containerd/config.toml” (node01, node02, node03)(新版本不需要这一步了)
 
-### 修改配置文件“/etc/containerd/config.toml” (node01, node02, node03)
-vim /etc/containerd/config.toml
+[//]: # (vi /etc/containerd/config.toml)
 
-[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
-  ...
-  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
-    SystemdCgroup = true # 添加此内容
+[//]: # ()
+[//]: # ([plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc])
+
+[//]: # (  ...)
+
+[//]: # (  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options])
+
+[//]: # (    SystemdCgroup = true # 添加此内容)
 
 
 ### 加载并启动服务 (node01, node02, node03)
