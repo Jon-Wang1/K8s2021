@@ -169,19 +169,19 @@ spec:
     nodes:
     - name: "node01.qytanghost.com"
       devices:
-      - name: "sdb"
-      - name: "sdc"
-      - name: "sdd"
+      - name: "nvme0n2"
+      - name: "nvme0n3"
+      - name: "nvme0n4"
     - name: "node02.qytanghost.com"
       devices:
-      - name: "sdb"
-      - name: "sdc"
-      - name: "sdd"
+      - name: "nvme0n2"
+      - name: "nvme0n3"
+      - name: "nvme0n4"
     - name: "node03.qytanghost.com"
       devices:
-      - name: "sdb"
-      - name: "sdc"
-      - name: "sdd"
+      - name: "nvme0n2"
+      - name: "nvme0n3"
+      - name: "nvme0n4"
   disruptionManagement:
     # If true, the operator will create and manage PodDisruptionBudgets for OSD, Mon, RGW, and MDS daemons. OSD PDBs are managed dynamically
     # via the strategy outlined in the [design](https://github.com/rook/rook/blob/master/design/ceph/ceph-managed-disruptionbudgets.md). The operator will
