@@ -11,9 +11,9 @@ data:
 
      # The smarthost and SMTP sender used for mail notifications
       smtp_smarthost: 'smtp.qq.com:465'
-      smtp_from: '3348326959@qq.com'
-      smtp_auth_username: '3348326959@qq.com'
-      smtp_auth_password: 'dmyymagcazklcjie'
+      smtp_from: '250518824@qq.com'
+      smtp_auth_username: '250518824@qq.com'
+      smtp_auth_password: 'ziysxddmfluwbhdg'
       smtp_require_tls: false
 
     # The directory from which notification templates are read.
@@ -59,14 +59,14 @@ data:
     receivers:
     - name: 'default'
       email_configs:
-      - to: 'collinsctk@qytang.com'
+      - to: 'qzw091736@icloud.com'
         send_resolved: true
         html: '{{ template "email.to.html" . }}'
         headers: { Subject: "乾颐堂默认Prometheus告警" }
 
     - name: 'gmail_admin'
       email_configs:
-      - to: 'collinsctk@gmail.com'
+      - to: 'zhongqiangwang@live.com'
         send_resolved: true
         html: '{{ template "email.to.html" . }}'
         headers: { Subject: "乾颐堂管理员Prometheus告警" }
