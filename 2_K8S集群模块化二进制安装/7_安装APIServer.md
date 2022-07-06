@@ -195,6 +195,9 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem \
 
 
 ### 产生用于--service-account-key-file的公钥 (dnsca)
+私钥用于controller manager，公钥用于API Server
+* controller manager用私钥为生成服务账户token签名
+* 公钥传入API server，用于认证过程中的token校验
 ```shell script
 # 产生秘钥对
 cd /opt/certs
