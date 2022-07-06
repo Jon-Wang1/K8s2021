@@ -68,7 +68,7 @@ vrrp_script chk_nginx {
 }
 vrrp_instance VI_1 {
     state MASTER
-    interface ens192
+    interface ens160
     virtual_router_id 251
     priority 100
     advert_int 1
@@ -106,7 +106,7 @@ vrrp_script chk_nginx {
 }
 vrrp_instance VI_1 {
     state BACKUP
-    interface ens192
+    interface ens160
     virtual_router_id 251
     priority 100
     advert_int 1
