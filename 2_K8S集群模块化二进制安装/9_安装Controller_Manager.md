@@ -89,7 +89,7 @@ kubectl config set-cluster kubernetes \
 
 ```
 
-###创建kubeconfig文件，设置客户端认证参数 (Master01, Master02, Master03)
+### 创建kubeconfig文件，设置客户端认证参数 (Master01, Master02, Master03)
 ```shell
 kubectl config set-credentials admin \
   --client-certificate=/opt/kubernetes/server/cert/admin.pem \
@@ -98,7 +98,7 @@ kubectl config set-credentials admin \
   --kubeconfig=kubectl.kubeconfig
 
 ```
-###创建kubeconfig文件，设置上下文参数 (Master01, Master02, Master03)
+### 创建kubeconfig文件，设置上下文参数 (Master01, Master02, Master03)
 ```shell
 kubectl config set-context kubernetes \
   --cluster=kubernetes \
@@ -107,7 +107,7 @@ kubectl config set-context kubernetes \
 
 ```
 
-###创建kubeconfig文件，设置默认上下文 (Master01, Master02, Master03)
+### 创建kubeconfig文件，设置默认上下文 (Master01, Master02, Master03)
 ```shell
 kubectl config use-context kubernetes --kubeconfig=kubectl.kubeconfig
 cp kubectl.kubeconfig ~/.kube/config
