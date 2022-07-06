@@ -164,6 +164,7 @@ supervisorctl status
 
 ### 查看状态(Master01, Master02 and Master03)
 [root@master01 ~]# supervisorctl status
+
 etcd-server                      RUNNING   pid 1570, uptime 1:28:05
 kube-apiserver                   RUNNING   pid 1995, uptime 0:47:08
 kube-controller-manager          RUNNING   pid 2261, uptime 0:22:54
@@ -172,6 +173,7 @@ kube-scheduler                   RUNNING   pid 2442, uptime 0:05:03
 
 ### 使用kubectl查看集群状态
 [root@localhost ~]# kubectl get cs
+
 NAME                 STATUS    MESSAGE              ERROR
 scheduler            Healthy   ok                   
 controller-manager   Healthy   ok                   
