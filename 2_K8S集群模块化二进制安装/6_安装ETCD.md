@@ -45,7 +45,7 @@ cfssl gencert -ca=ca.pem -ca-key=ca-key.pem \
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-##二进制安装etcd(Master01, Master02, Master03)
+## 二进制安装etcd(Master01, Master02, Master03)
 
 ### 创建用户(Master01, Master02, Master03)
 ```shell script
