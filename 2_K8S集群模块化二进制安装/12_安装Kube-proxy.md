@@ -191,6 +191,7 @@ yum install ipvsadm -y
 
 ### 查看ipvs（IP Virtual Server）状态(Node01, Node02和Node03)
 [root@node01 conf]# ipvsadm -Ln
+
 IP Virtual Server version 1.2.1 (size=4096)
 Prot LocalAddress:Port Scheduler Flags
   -> RemoteAddress:Port           Forward Weight ActiveConn InActConn
@@ -201,7 +202,8 @@ TCP  192.168.0.1:443 rr
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-###查看svc (任何Master)
-root@localhost ~]# kubectl get svc
+### 查看svc (任何Master)
+[root@localhost ~]# kubectl get svc
+
 NAME         TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)   AGE
 kubernetes   ClusterIP   192.168.0.1   <none>        443/TCP   13h
