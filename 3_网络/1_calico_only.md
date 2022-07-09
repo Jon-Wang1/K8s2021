@@ -22,7 +22,7 @@ docker push harbor.qytanghost.com/public/calico_ctl:v3.20.2
 
 ```
 
-### 下载并tag pause（所有计算节点）[如果翻墙问题]
+### 下载并tag pause（所有计算节点）
 ```shell
 docker pull harbor.qytanghost.com/public/pause
 docker tag harbor.qytanghost.com/public/pause k8s.gcr.io/pause:3.2
@@ -67,6 +67,8 @@ nginx -s reload
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/calico/tigera-operator.yaml
 kubectl apply -f http://mgmtcentos.qytanghost.com/calico/custom-resources.yaml
+kubectl delete -f http://mgmtcentos.qytanghost.com/calico/tigera-operator.yaml
+kubectl delete -f http://mgmtcentos.qytanghost.com/calico/custom-resources.yaml
 
 ```
 
