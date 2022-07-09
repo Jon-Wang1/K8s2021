@@ -149,6 +149,7 @@ systemctl enable named
 
 ### 查看服务named状态(dnsca)
 [root@dnsca ~]# systemctl status named
+
 ● named.service - Berkeley Internet Name Domain (DNS)
    Loaded: loaded (/usr/lib/systemd/system/named.service; enabled; vendor preset: disabled)
    Active: active (running) since Mon 2021-10-11 10:45:38 CST; 6min ago
@@ -165,6 +166,7 @@ Oct 11 10:51:41 dnsca.qytanghost.com named[1154]: network unreachable resolving 
 
 ### 查看服务(dnsca)
 [root@dnsca ~]# netstat -luntp | grep 53
+
 tcp        0      0 127.0.0.1:953           0.0.0.0:*               LISTEN      1154/named
 tcp6       0      0 :::53                   :::*                    LISTEN      1154/named
 tcp6       0      0 ::1:953                 :::*                    LISTEN      1154/named
