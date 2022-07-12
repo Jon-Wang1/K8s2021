@@ -94,7 +94,12 @@ containerd config default | sudo tee /etc/containerd/config.toml
 
 [//]: # (    SystemdCgroup = true # 添加此内容)
 
-
+### 配置containerd的镜像加速器,修改配置文件"/etc/containerd/config.toml"(node01, node02, node03)
+```
+      [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+        [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker.io"]
+          endpoint = ["https://0a041wc3.mirror.aliyuncs.com"]
+```
 ### 加载并启动服务 (node01, node02, node03)
 ```shell
 systemctl enable containerd
