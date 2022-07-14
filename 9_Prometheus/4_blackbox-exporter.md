@@ -50,7 +50,7 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/blackbox-exporter/b
 
 ```
 
-###查看pod状况(任何一个Master)
+### 查看pod状况(任何一个Master)
 [root@master01 ~]# kubectl get pod -l "app=blackbox-exporter" -n monitoring -o wide
 NAME                                 READY   STATUS    RESTARTS   AGE   IP              NODE                    NOMINATED NODE   READINESS GATES
 blackbox-exporter-7fd7d9997d-plpx6   1/1     Running   0          57s   172.16.201.67   node01.qytanghost.com   <none>           <none>

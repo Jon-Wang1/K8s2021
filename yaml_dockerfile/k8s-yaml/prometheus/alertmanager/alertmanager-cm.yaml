@@ -10,7 +10,7 @@ data:
       resolve_timeout: 5m
 
      # The smarthost and SMTP sender used for mail notifications
-      smtp_smarthost: 'smtp.qq.com'
+      smtp_smarthost: 'smtp.qq.com:465'
       smtp_from: '250518824@qq.com'
       smtp_auth_username: '250518824@qq.com'
       smtp_auth_password: 'ziysxddmfluwbhdg'

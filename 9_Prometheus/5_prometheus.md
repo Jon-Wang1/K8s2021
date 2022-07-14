@@ -66,7 +66,7 @@ kubectl create secret generic etcd-client-key --from-file=/opt/kubernetes/server
 
 ```
 
-###应用资源配置清单创建pvc (任何一个Master)
+### 应用资源配置清单创建pvc (任何一个Master)
 ```shell
 kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/prometheus/prometheus-pvc.yaml
 
@@ -77,7 +77,7 @@ kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/prometheus/promethe
 NAME             STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 prometheus-pvc   Bound    pvc-4e4bc041-30d2-4283-859c-a97451c471d7   100Gi      RWO            rook-cephfs    69s
 
-###应用资源配置清单 (任何一个Master)
+### 应用资源配置清单 (任何一个Master)
 ```shell
 kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/prometheus/prometheus-rbac.yaml
 kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/prometheus/prometheus-dp.yaml
