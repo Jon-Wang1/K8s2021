@@ -8,7 +8,7 @@ docker push harbor.qytanghost.com/monitoring/node-exporter:v1.2.2
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-###应用资源配置清单(任何一个Master)
+### 应用资源配置清单(任何一个Master)
 ```shell script
 kubectl apply -f http://mgmtcentos.qytanghost.com/prometheus/node-exporter/node-exporter-ds.yaml
 
@@ -23,7 +23,7 @@ node-exporter-h5qj6   1/1     Running   0          57s   172.16.201.65   node01.
 
 ----------------------------------注意此处切换设备--------------------------------------
 
-###查看端口与测试(任何一个计算节点)
+### 查看端口与测试(任何一个计算节点)
 [root@node01 ~]# curl 172.16.201.65:9100
 <html>
                         <head><title>Node Exporter</title></head>
